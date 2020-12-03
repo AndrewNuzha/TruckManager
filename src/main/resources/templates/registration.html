@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+</head>
+<body>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<!-- navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #f48024;">
+
+    <div class="navbar-brand" id="logoBox">
+        <img src="/images/truckLogo.png" width="38" height="33" class="d-inline-block align-top" alt="">
+        TruckManager
+    </div>
+
+</nav>
+
+<br>
+<br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+
+            <!-- success message -->
+            <div th:if="${param.success}">
+                <div class="alert alert-info">You've successfully registered
+                    to TruckManager!
+                </div>
+            </div>
+            <!-- error message -->
+            <div th:if="${param.error}">
+                <div class="alert alert-danger">Invalid parameters</div>
+            </div>
+
+            <h1>Registration</h1>
+
+            <form th:action="@{/registration}" method="post" th:object="${user}"
+                  oninput='password2.setCustomValidity(password.value != password2.value ? "Passwords do not match." : "")'>
+                <div class="form-group">
+                    <label class="control-label" for="firstName"> First Name </label>
+                    <input id="firstName" class="form-control" th:field="*{firstName}"
+                           required autofocus="autofocus">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="lastName"> Last Name </label>
+                    <input id="lastName" class="form-control" th:field="*{lastName}"
+                           required autofocus="autofocus">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="nickName"> Nickname </label>
+                    <input id="nickName" class="form-control" th:field="*{nickName}" required
+                           autofocus="autofocus">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('nickName')}" th:errors="*{nickName}">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="email"> Email </label>
+                    <input id="email" class="form-control" th:field="*{email}" required
+                           autofocus="autofocus">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="password"> Password </label>
+                    <input id="password" class="form-control" type="password" name="password"
+                           th:field="*{password}" required autofocus="autofocus">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="password2"> Password </label>
+                    <input id="password2" class="form-control" type="password" name="password2"
+                           required autofocus="autofocus">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" id="registrationButton" class="btn btn-success">Register</button>
+                    <br><br>
+                    <span>Already registered? <a href="/" th:href="@{/login}">Login
+								here</a></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+<style>
+    #registrationButton {
+        color: #fff;
+        background-color: #ff995c;
+        border-color: #ff995c;
+    }
+
+    #registrationButton:hover {
+        background-color: #ff730a;
+    }
+</style>
