@@ -47,6 +47,10 @@
             <li class="nav-item active">
                 <a class="nav-link" href="#">Orders</a>
             </li>
+            <li class="nav-item active" id="balanceItem">
+                <span class="nav-link" th:text="${balance}">Balance</span>
+<!--                After replace it with link to balance module-->
+            </li>
 
         </ul>
         <ul class="nav navbar-nav navbar-right" id="rightDropdown">
@@ -86,6 +90,14 @@
 
     #logoBox {
         padding-bottom: 6px;
+    }
+
+    #balanceItem:hover {
+        background-color: #f48024;
+    }
+
+    #balanceItem {
+        padding-left: 150px;
     }
 
 </style>

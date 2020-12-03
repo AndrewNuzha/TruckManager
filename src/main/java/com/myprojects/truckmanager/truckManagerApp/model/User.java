@@ -38,6 +38,10 @@ public class User {
                     name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
     public User(String firstName, String lastName, String nickName, String email, String password, List<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -45,5 +49,11 @@ public class User {
         this.password = password;
         this.email = email;
         this.roles = roles;
+    }
+
+    public void addCompanyToUser(Company company) {
+        if (this.company == null) {
+            this.setCompany(company);
+        }
     }
 }

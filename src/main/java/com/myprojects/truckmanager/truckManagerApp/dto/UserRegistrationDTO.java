@@ -1,5 +1,6 @@
 package com.myprojects.truckmanager.truckManagerApp.dto;
 
+import com.myprojects.truckmanager.truckManagerApp.authentication.UniqueCompanyName;
 import com.myprojects.truckmanager.truckManagerApp.authentication.UniqueNickname;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,11 @@ public class UserRegistrationDTO {
     @NotEmpty(message = "Last Name can not be empty")
     @Size(max = 20, message = "Last name must be no more than 20 characters")
     private String lastName;
+    @NotNull(message = "Company Name can not be null")
+    @NotEmpty(message = "Company Name can not be empty")
+    @Size(max = 25, message = "Company name must be no more than 25 characters")
+    @UniqueCompanyName
+    private String companyName;
     @NotNull(message = "Nickname can not be null")
     @NotEmpty(message = "Nickname can not be empty")
     @Size(min = 5, max = 15, message = "Nickname must be between 5 and 15 characters")

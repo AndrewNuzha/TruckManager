@@ -67,6 +67,14 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="control-label" for="companyName"> Company Name </label>
+                    <input id="companyName" class="form-control" th:field="*{companyName}"
+                           required autofocus="autofocus">
+                    <p class="alert alert-danger" th:if="${#fields.hasErrors('companyName')}"
+                       th:errors="*{companyName}">
+                </div>
+
+                <div class="form-group">
                     <label class="control-label" for="nickName"> Nickname </label>
                     <input id="nickName" class="form-control" th:field="*{nickName}" required
                            autofocus="autofocus">

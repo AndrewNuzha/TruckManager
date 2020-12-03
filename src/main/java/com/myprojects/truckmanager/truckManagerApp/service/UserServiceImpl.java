@@ -1,6 +1,7 @@
 package com.myprojects.truckmanager.truckManagerApp.service;
 
 import com.myprojects.truckmanager.truckManagerApp.dto.UserRegistrationDTO;
+import com.myprojects.truckmanager.truckManagerApp.model.Company;
 import com.myprojects.truckmanager.truckManagerApp.model.Role;
 import com.myprojects.truckmanager.truckManagerApp.model.User;
 import com.myprojects.truckmanager.truckManagerApp.repository.UserRepository;
@@ -27,19 +28,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(UserRegistrationDTO userRegistrationDTO) {
-        User user = new User(userRegistrationDTO.getFirstName(),
+
+        Company newCompany = new Company(userRegistrationDTO.getCompanyName(), 20000L);
+        User newUser = new User(userRegistrationDTO.getFirstName(),
                 userRegistrationDTO.getLastName(),
                 userRegistrationDTO.getNickName(),
                 userRegistrationDTO.getEmail(),
                 passwordEncoder.encode(userRegistrationDTO.getPassword()),
                 Arrays.asList(new Role("USER")));
 
-        return userRepository.save(user);
+        newUser.addCompanyToUser(newCompany);
+
+        return userRepository.save(newUser);
     }
 
     @Override
     public User findUserByNickName(String nickName) {
-        return null;
+        return userRepository.findByNickName(nickName);
     }
 
     @Override
