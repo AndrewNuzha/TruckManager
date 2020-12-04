@@ -5,6 +5,7 @@ import com.myprojects.truckmanager.truckManagerApp.model.Company;
 import com.myprojects.truckmanager.truckManagerApp.model.Role;
 import com.myprojects.truckmanager.truckManagerApp.model.User;
 import com.myprojects.truckmanager.truckManagerApp.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,18 +19,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private CompanyService companyService;
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public User save(UserRegistrationDTO userRegistrationDTO) {
 
-        Company newCompany = new Company(userRegistrationDTO.getCompanyName(), 20000L);
+        Company newCompany = companyService.createNewCompany(userRegistrationDTO.getCompanyName());
         User newUser = new User(userRegistrationDTO.getFirstName(),
                 userRegistrationDTO.getLastName(),
                 userRegistrationDTO.getNickName(),
@@ -43,8 +47,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByNickName(String nickName) {
-        return userRepository.findByNickName(nickName);
+    public User findUserWithCompanyByNickName(String nickName) {
+        return userRepository.findWithCompanyByNickName(nickName);
     }
 
     @Override
@@ -61,6 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        log.info("Getting user by nickname: {}", userName);
         User userFromDb = userRepository.findByNickName(userName);
         if (userFromDb == null) {
             throw new UsernameNotFoundException("Invalid username or password");
@@ -70,7 +75,7 @@ public class UserServiceImpl implements UserService {
                 userFromDb.getPassword(), mapRolesToAuthorities(userFromDb.getRoles()));
     }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
     }
 }

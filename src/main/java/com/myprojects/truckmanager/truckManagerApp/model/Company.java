@@ -5,6 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,6 +25,10 @@ public class Company {
     private String name;
     @Column(name = "balance")
     private Long balance;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "company", fetch = FetchType.LAZY)
+    private List<Truck> trucks;
 
     public Company(String name, Long balance) {
         this.name = name;

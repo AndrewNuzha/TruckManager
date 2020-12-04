@@ -8,7 +8,7 @@ public interface UserService extends UserDetailsService {
 
     User save(UserRegistrationDTO userRegistrationDTO);
 
-    User findUserByNickName(String nickName);
+    User findUserWithCompanyByNickName(String nickName);
 
     boolean isNickNameAlreadyExist(String nickName);
 

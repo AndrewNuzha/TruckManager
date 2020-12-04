@@ -7,9 +7,10 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
 
-    <title>Homepage</title>
+    <title>Trucks</title>
 </head>
 <body>
+
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
@@ -19,6 +20,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #f48024;">
 
@@ -42,14 +45,14 @@
             </li>
 
             <li class="nav-item active">
-                <a class="nav-link" href="/trucks">Trucks <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="#">Trucks <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="#">Orders</a>
             </li>
             <li class="nav-item active" id="balanceItem">
                 <span class="nav-link" th:text="${balance}">Balance</span>
-<!--                After replace it with link to balance module-->
+                <!--                After replace it with link to balance module-->
             </li>
 
         </ul>
@@ -68,6 +71,53 @@
         </ul>
     </div>
 </nav>
+
+<div th:switch="${trucks}">
+    <h2 th:case="null">You have no trucks in garage</h2>
+    <div th:case="*">
+        <table class="table table-hover">
+            <thead>
+            <tr class="headT">
+                <!--        <th scope="col">#</th>-->
+                <th class="truckHead" scope="col" >Model</th>
+                <th class="truckHead" scope="col">Consumption</th>
+                <th class="truckHead" scope="col">Load</th>
+                <th class="truckHead" scope="col">Mileage</th>
+                <th class="truckHead" scope="col">Options</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="truck : ${trucks}">
+                <td class="truckContent" th:text="${truck.model}"></td>
+                <td class="truckContent" th:text="${truck.fuelConsumption}"></td>
+                <td class="truckContent" th:text="${truck.maxLoad}"></td>
+                <td class="truckContent" th:text="${truck.mileage}"></td>
+                <td class="truckContent"><a href="#" class="btn btn-info btn-lg">
+                    <span class="glyphicon glyphicon-cog"></span> Details
+                </a></td>
+<!--                <td class="truckContent"><a th:href="@{employee-update/{id}(id=${truck.id})}">Details</a></td>-->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<p>Cog icon as a link:
+    <a href="#">
+        <span class="glyphicon glyphicon-cog"></span>
+    </a>
+</p>
+<p>Cog icon on a button:
+    <button type="button" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-cog"></span> Cog
+    </button>
+</p>
+<p>Cog icon on a styled link button:
+    <a href="#" class="btn btn-info btn-lg">
+        <span class="glyphicon glyphicon-cog"></span> Details
+    </a>
+</p>
 
 </body>
 </html>
@@ -98,6 +148,15 @@
 
     #balanceItem {
         padding-left: 150px;
+    }
+
+    .truckHead {
+        text-align: center;
+        background-color: #cdcdcd;
+    }
+
+    .truckContent {
+        text-align: center;
     }
 
 </style>
