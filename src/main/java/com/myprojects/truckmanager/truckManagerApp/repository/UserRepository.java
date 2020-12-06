@@ -14,14 +14,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return user from DB
      */
     @EntityGraph(attributePaths = {"roles"})
-    User findByNickName(String nickName);
+    User findWithRolesByNickName(String nickName);
 
     /**
-     * Returns user object from DB with company
+     * Returns user object from DB with company and trucks
      * @param nickName nickname
      * @return user from DB
      */
-    @EntityGraph(attributePaths = {"company", "company.trucks"})
-    User findWithCompanyByNickName(String nickName);
+    @EntityGraph(attributePaths = {"company", "company.trucks.details"})
+    User findWithCompanyAndTrucksByNickName(String nickName);
 
 }

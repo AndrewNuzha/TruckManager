@@ -6,4 +6,6 @@ public interface TruckService {
 
     void saveTruck(Truck truck);
 
+    Truck createStarterTruck();
+
 }

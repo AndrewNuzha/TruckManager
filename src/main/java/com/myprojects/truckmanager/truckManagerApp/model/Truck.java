@@ -34,16 +34,8 @@ public class Truck {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    public Truck(String model, Float fuelConsumption, Long mileage, Integer maxLoad, Timestamp productionYear) {
-        this.model = model;
-        this.fuelConsumption = fuelConsumption;
-        this.mileage = mileage;
-        this.maxLoad = maxLoad;
-        this.productionYear = productionYear;
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "truck_details_id")
+    private TruckDetails details;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, model, fuelConsumption, mileage, maxLoad, productionYear, company);
-    }
 }

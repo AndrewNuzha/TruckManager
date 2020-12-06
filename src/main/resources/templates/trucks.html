@@ -21,7 +21,7 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+<!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">-->
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #f48024;">
 
@@ -93,31 +93,13 @@
                 <td class="truckContent" th:text="${truck.fuelConsumption}"></td>
                 <td class="truckContent" th:text="${truck.maxLoad}"></td>
                 <td class="truckContent" th:text="${truck.mileage}"></td>
-                <td class="truckContent"><a href="#" class="btn btn-info btn-lg">
-                    <span class="glyphicon glyphicon-cog"></span> Details
-                </a></td>
-<!--                <td class="truckContent"><a th:href="@{employee-update/{id}(id=${truck.id})}">Details</a></td>-->
+                <td class="truckContent"><a href="#" class="btn btn-primary btn-sm" id="detailsButton"
+                                            role="button" aria-pressed="true">Details</a></td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
-
-<p>Cog icon as a link:
-    <a href="#">
-        <span class="glyphicon glyphicon-cog"></span>
-    </a>
-</p>
-<p>Cog icon on a button:
-    <button type="button" class="btn btn-default btn-sm">
-        <span class="glyphicon glyphicon-cog"></span> Cog
-    </button>
-</p>
-<p>Cog icon on a styled link button:
-    <a href="#" class="btn btn-info btn-lg">
-        <span class="glyphicon glyphicon-cog"></span> Details
-    </a>
-</p>
 
 </body>
 </html>
@@ -157,6 +139,14 @@
 
     .truckContent {
         text-align: center;
+    }
+
+    #detailsButton {
+        background-color: #ff995c;
+    }
+
+    #detailsButton:hover {
+        background-color: #f48024;
     }
 
 </style>

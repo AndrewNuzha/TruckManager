@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public User save(UserRegistrationDTO userRegistrationDTO) {
 
         Company newCompany = companyService.createNewCompany(userRegistrationDTO.getCompanyName());
@@ -48,13 +49,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserWithCompanyByNickName(String nickName) {
-        return userRepository.findWithCompanyByNickName(nickName);
+        return userRepository.findWithCompanyAndTrucksByNickName(nickName);
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean isNickNameAlreadyExist(String nickName) {
-        User userFromDb = userRepository.findByNickName(nickName);
+        User userFromDb = userRepository.findWithRolesByNickName(nickName);
         if (userFromDb == null) {
             return false;
         } else {
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         log.info("Getting user by nickname: {}", userName);
-        User userFromDb = userRepository.findByNickName(userName);
+        User userFromDb = userRepository.findWithRolesByNickName(userName);
         if (userFromDb == null) {
             throw new UsernameNotFoundException("Invalid username or password");
         }

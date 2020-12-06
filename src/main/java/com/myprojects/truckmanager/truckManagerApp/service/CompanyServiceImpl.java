@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
@@ -29,15 +26,9 @@ public class CompanyServiceImpl implements CompanyService {
     public Company createNewCompany(String name) {
 
         Company newCompany = new Company(name, 20000L);
-        Truck firstTruck = new Truck();
-        firstTruck.setModel("Scania RX100");
-        firstTruck.setFuelConsumption(0.41f);
-        firstTruck.setMileage(0L);
-        firstTruck.setMaxLoad(25);
-        firstTruck.setProductionYear(new Timestamp(new Date().getTime()));
-
-        firstTruck.setCompany(newCompany);
-        truckService.saveTruck(firstTruck);
+        Truck newTruck = truckService.createStarterTruck();
+        newTruck.setCompany(newCompany);
+        truckService.saveTruck(newTruck);
 
         return newCompany;
     }
