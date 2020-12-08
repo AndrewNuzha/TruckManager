@@ -20,7 +20,7 @@ public class TruckDetails {
     @Column(name = "mileage_before_service")
     private Long mileageBeforeService;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "current_location_id")
     private Location currentLocation;
 }

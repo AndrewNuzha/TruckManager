@@ -1,10 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
     <title>Trips</title>
 </head>
 <body>
 
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">-->
+
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #f48024;">
+
+    <div class="navbar-brand" id="logoBox">
+        <img src="/images/truckLogo.png" width="38" height="33" class="d-inline-block align-top" alt="">
+        TruckManager
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown active">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    My company
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+
+            <li class="nav-item active">
+                <a class="nav-link" href="/trucks">Trucks <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/trips">Available trips</a>
+            </li>
+            <li class="nav-item active" id="balanceItem">
+                <span class="nav-link" th:text="${balance}">Balance</span>
+                <!--                After replace it with link to balance module-->
+            </li>
+
+        </ul>
+        <ul class="nav navbar-nav navbar-right" id="rightDropdown">
+            <li class="nav-item dropdown active">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span th:text="${username}">UserNickName</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" id="logout" href="/logout">Log out</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div th:switch="${trips}">
+    <h3 th:case="null">You have no available trips now</h3>
+    <div th:case="*">
+        <table class="table table-hover">
+            <thead>
+            <tr class="headT">
+                <th class="tripHead" scope="col">Departure</th>
+                <th class="tripHead" scope="col">Arrival</th>
+                <th class="tripHead" scope="col">Delivery cost</th>
+                <th class="tripHead" scope="col">Distance</th>
+                <th class="tripHead" scope="col">Category</th>
+                <th class="tripHead" scope="col">Options</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="trip : ${trips}">
+                <td class="tripContent" th:text="${trip.departureLocation}"></td>
+                <td class="tripContent" th:text="${trip.arrivalLocation}"></td>
+                <td class="tripContent" th:text="${trip.deliveryCost}"></td>
+                <td class="tripContent" th:text="${trip.distance}"></td>
+                <td class="tripContent" th:text="${trip.category}"></td>
+                <td class="tripContent"><a href="#" class="btn btn-primary btn-sm" id="detailsButton"
+                                            role="button" aria-pressed="true">Details</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 </body>
 </html>
+
+<style>
+    #rightDropdown {
+        padding-right: 10%;
+    }
+    .dropdown-item:hover {
+        background-color: #ffc396;
+    }
+
+    .nav-item:hover {
+        background-color: #ff995c;
+    }
+
+    #logout {
+        background-color: #ff613f;
+    }
+
+    #logoBox {
+        padding-bottom: 6px;
+    }
+
+    #balanceItem:hover {
+        background-color: #f48024;
+    }
+
+    #balanceItem {
+        padding-left: 150px;
+    }
+
+    .tripHead {
+        text-align: center;
+        background-color: #cdcdcd;
+    }
+
+    .tripContent {
+        text-align: center;
+    }
+
+    #detailsButton {
+        background-color: #ff995c;
+    }
+
+    #detailsButton:hover {
+        background-color: #f48024;
+    }
+
+</style>

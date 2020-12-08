@@ -27,6 +27,10 @@ public class Company {
             mappedBy = "company", fetch = FetchType.LAZY)
     private List<Truck> trucks;
 
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "company", fetch = FetchType.LAZY)
+    private List<Shipment> shipments;
+
     public Company(String name, Long balance) {
         this.name = name;
         this.balance = balance;

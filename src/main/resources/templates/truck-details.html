@@ -71,38 +71,24 @@
         </ul>
     </div>
 </nav>
-
-<div th:switch="${trucks}">
-    <h2 th:case="null">You have no trucks in garage</h2>
-    <div th:case="*">
-        <table class="table table-hover">
-            <thead>
-            <tr class="headT">
-                <th class="truckHead" scope="col">Model</th>
-                <th class="truckHead" scope="col">Consumption</th>
-                <th class="truckHead" scope="col">Load</th>
-                <th class="truckHead" scope="col">Mileage</th>
-                <th class="truckHead" scope="col">Options</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="truck : ${trucks}">
-                <td class="truckContent" th:text="${truck.model}"></td>
-                <td class="truckContent" th:text="${truck.fuelConsumption}"></td>
-                <td class="truckContent" th:text="${truck.maxLoad}"></td>
-                <td class="truckContent" th:text="${truck.mileage}"></td>
-<!--                <td class="truckContent"><a href="#" class="btn btn-primary btn-sm" id="detailsButton"-->
-<!--                                            role="button" aria-pressed="true">Details</a></td>-->
-                <td class="truckContent"><a th:href="@{truck-details/{id}(id=${truck.id})}"
-                                            class="btn btn-primary btn-sm" id="detailsButton" role="button"
-                                            aria-pressed="true">Details</a></td>
-
-
-            </tr>
-            </tbody>
-        </table>
+<form>
+    <div class="form-group row">
+        <label for="mileageBeforeService" class="col-sm-2 col-form-label">Mileage before service</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="text" placeholder="Mileage before service"
+                   id="mileageBeforeService"
+                   readonly th:value="${details.mileageBeforeService}">
+        </div>
     </div>
-</div>
+    <div class="form-group row">
+        <label for="currentLocation" class="col-sm-2 col-form-label">Current location</label>
+        <div class="col-sm-10">
+            <input class="form-control" type="text" placeholder="Current location"
+                   id="currentLocation"
+                   readonly th:value="${details.currentLocation.country + ' , ' + details.currentLocation.city}">
+        </div>
+    </div>
+</form>
 
 </body>
 </html>
@@ -135,21 +121,12 @@
         padding-left: 150px;
     }
 
-    .truckHead {
-        text-align: center;
-        background-color: #cdcdcd;
+    .form-control {
+        width: 30%;
     }
 
-    .truckContent {
-        text-align: center;
-    }
-
-    #detailsButton {
-        background-color: #ff995c;
-    }
-
-    #detailsButton:hover {
-        background-color: #f48024;
+    .form-group {
+        padding-left: 5%;
     }
 
 </style>
