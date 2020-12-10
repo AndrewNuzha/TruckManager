@@ -8,4 +8,6 @@ public interface CompanyService {
 
     boolean isNameAlreadyExist(String name);
 
+    Company findCompanyById(Long id);
+
 }

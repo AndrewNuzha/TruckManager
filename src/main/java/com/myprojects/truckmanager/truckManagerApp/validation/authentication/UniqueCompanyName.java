@@ -1,4 +1,4 @@
-package com.myprojects.truckmanager.truckManagerApp.authentication;
+package com.myprojects.truckmanager.truckManagerApp.validation.authentication;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

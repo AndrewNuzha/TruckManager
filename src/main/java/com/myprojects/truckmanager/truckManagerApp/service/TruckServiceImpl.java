@@ -1,8 +1,6 @@
 package com.myprojects.truckmanager.truckManagerApp.service;
 
-import com.myprojects.truckmanager.truckManagerApp.model.Location;
-import com.myprojects.truckmanager.truckManagerApp.model.Truck;
-import com.myprojects.truckmanager.truckManagerApp.model.TruckDetails;
+import com.myprojects.truckmanager.truckManagerApp.model.*;
 import com.myprojects.truckmanager.truckManagerApp.repository.TruckDetailsRepository;
 import com.myprojects.truckmanager.truckManagerApp.repository.TruckRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ public class TruckServiceImpl implements TruckService {
     @Autowired
     LocationService locationService;
 
-
     /**
      * Creates new starter truck with details for a new company
      * @return created truck
@@ -38,15 +35,22 @@ public class TruckServiceImpl implements TruckService {
         truck.setModel("Scania RX100");
         truck.setFuelConsumption(0.41f);
         truck.setMileage(0L);
-        truck.setMaxLoad(25);
-        truck.setProductionYear(new Timestamp(new Date().getTime()));
+        truck.setCategory(TruckCategory.VAN.getCategory);
+        truck.setStatus(TruckStatus.AVAILABLE.getStatus);
 
         TruckDetails truckDetails = new TruckDetails();
         truckDetails.setMileageBeforeService(25000L);
         truckDetails.setCurrentLocation(starterLocation);
+        truckDetails.setProductionYear(new Timestamp(new Date().getTime()));
 
         truck.setDetails(truckDetails);
         return truck;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Truck findTruckById(Long id) {
+        return truckRepository.findTruckById(id);
     }
 
     @Override

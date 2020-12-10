@@ -1,4 +1,4 @@
-package com.myprojects.truckmanager.truckManagerApp.authentication;
+package com.myprojects.truckmanager.truckManagerApp.validation.authentication;
 
 import com.myprojects.truckmanager.truckManagerApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

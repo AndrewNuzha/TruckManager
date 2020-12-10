@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Company findByName(String name);
+
+    Company findCompanyById(Long id);
 }

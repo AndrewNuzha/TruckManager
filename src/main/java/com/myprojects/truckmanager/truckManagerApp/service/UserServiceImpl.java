@@ -48,8 +48,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User findUserWithCompanyByNickName(String nickName) {
         return userRepository.findWithCompanyAndTrucksByNickName(nickName);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findUserWithCompanyIdByNickName(String nickName) {
+        return userRepository.findWithCompanyByNickName(nickName);
     }
 
     @Override

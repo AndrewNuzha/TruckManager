@@ -33,7 +33,8 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown active">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
                     My company
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -58,7 +59,8 @@
         </ul>
         <ul class="nav navbar-nav navbar-right" id="rightDropdown">
             <li class="nav-item dropdown active">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
                     <span th:text="${username}">UserNickName</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -80,8 +82,9 @@
             <tr class="headT">
                 <th class="truckHead" scope="col">Model</th>
                 <th class="truckHead" scope="col">Consumption</th>
-                <th class="truckHead" scope="col">Load</th>
                 <th class="truckHead" scope="col">Mileage</th>
+                <th class="truckHead" scope="col">Category</th>
+                <th class="truckHead" scope="col">Status</th>
                 <th class="truckHead" scope="col">Options</th>
             </tr>
             </thead>
@@ -89,15 +92,17 @@
             <tr th:each="truck : ${trucks}">
                 <td class="truckContent" th:text="${truck.model}"></td>
                 <td class="truckContent" th:text="${truck.fuelConsumption}"></td>
-                <td class="truckContent" th:text="${truck.maxLoad}"></td>
                 <td class="truckContent" th:text="${truck.mileage}"></td>
-<!--                <td class="truckContent"><a href="#" class="btn btn-primary btn-sm" id="detailsButton"-->
-<!--                                            role="button" aria-pressed="true">Details</a></td>-->
-                <td class="truckContent"><a th:href="@{truck-details/{id}(id=${truck.id})}"
-                                            class="btn btn-primary btn-sm" id="detailsButton" role="button"
-                                            aria-pressed="true">Details</a></td>
-
-
+                <td class="truckContent" th:text="${truck.category}"></td>
+                <td class="truckContent" th:text="${truck.status}"></td>
+                <td class="truckContent">
+                    <a th:href="@{truck-details/{id}(id=${truck.id})}"
+                       class="btn btn-primary btn-sm" id="detailsButton" role="button"
+                       aria-pressed="true">Details</a>
+                    <a th:href="@{create-shipment/{id}(id=${truck.id})}"
+                       class="btn btn-primary btn-sm" id="newShipmentButton" role="button"
+                       aria-pressed="true">New shipment</a>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -111,6 +116,7 @@
     #rightDropdown {
         padding-right: 10%;
     }
+
     .dropdown-item:hover {
         background-color: #ffc396;
     }
@@ -144,11 +150,11 @@
         text-align: center;
     }
 
-    #detailsButton {
+    .btn-primary {
         background-color: #ff995c;
     }
 
-    #detailsButton:hover {
+    .btn-primary:hover {
         background-color: #f48024;
     }
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:align-content="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet"
@@ -58,7 +58,8 @@
         </ul>
         <ul class="nav navbar-nav navbar-right" id="rightDropdown">
             <li class="nav-item dropdown active">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
                     <span th:text="${username}">UserNickName</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -74,7 +75,7 @@
 
 <div th:switch="${trips}">
     <h3 th:case="null">You have no available trips now</h3>
-    <div th:case="*">
+     <div th:case="*">
         <table class="table table-hover">
             <thead>
             <tr class="headT">
@@ -83,7 +84,8 @@
                 <th class="tripHead" scope="col">Delivery cost</th>
                 <th class="tripHead" scope="col">Distance</th>
                 <th class="tripHead" scope="col">Category</th>
-                <th class="tripHead" scope="col">Options</th>
+<!--                <th class="tripHead" scope="col">Truck</th>-->
+<!--                <th class="tripHead" scope="col">Options</th>-->
             </tr>
             </thead>
             <tbody>
@@ -93,8 +95,18 @@
                 <td class="tripContent" th:text="${trip.deliveryCost}"></td>
                 <td class="tripContent" th:text="${trip.distance}"></td>
                 <td class="tripContent" th:text="${trip.category}"></td>
+<!--                <td class="tripContent"><a href="#" class="btn btn-primary btn-sm" id="detailsButton"-->
+<!--                                           role="button" aria-pressed="true">Take order</a></td>-->
+                <td class="tripContent"><div class="col-lg-3" th:object="${trip}">
+                    <select class="form-control" id="testOrder" name="testOrder">
+                        <option value="">Select Test Order</option>
+                        <option th:each="truck : ${trip.trucks}"
+                                th:value="${truck.id}"
+                                th:text="${truck.model}+' : '+${truck.mileage}"></option>
+                    </select>
+                </div></td>
                 <td class="tripContent"><a href="#" class="btn btn-primary btn-sm" id="detailsButton"
-                                            role="button" aria-pressed="true">Details</a></td>
+                                                             role="button" aria-pressed="true">Take order</a></td>
             </tr>
             </tbody>
         </table>
@@ -147,6 +159,10 @@
 
     #detailsButton:hover {
         background-color: #f48024;
+    }
+
+    .form-control {
+        width: auto !important;
     }
 
 </style>

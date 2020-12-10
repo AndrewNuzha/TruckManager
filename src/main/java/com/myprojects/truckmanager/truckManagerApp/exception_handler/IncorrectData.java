@@ -5,11 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class TruckIncorrectData {
+public class IncorrectData {
 
     private String info;
 
-    public TruckIncorrectData() {
+    public IncorrectData() {
     }
 
 }

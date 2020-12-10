@@ -25,10 +25,10 @@ public class Truck {
     private Float fuelConsumption;
     @Column(name = "mileage")
     private Long mileage;
-    @Column(name = "max_load")
-    private Integer maxLoad;
-    @Column(name = "production_year")
-    private Timestamp productionYear;
+    @Column(name = "category")
+    private String category;
+    @Column(name = "status")
+    private String status;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "company_id")

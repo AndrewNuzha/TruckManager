@@ -1,7 +1,7 @@
 package com.myprojects.truckmanager.truckManagerApp.dto;
 
-import com.myprojects.truckmanager.truckManagerApp.authentication.UniqueCompanyName;
-import com.myprojects.truckmanager.truckManagerApp.authentication.UniqueNickname;
+import com.myprojects.truckmanager.truckManagerApp.validation.authentication.UniqueCompanyName;
+import com.myprojects.truckmanager.truckManagerApp.validation.authentication.UniqueNickname;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -8,4 +8,6 @@ public interface TruckService {
 
     Truck createStarterTruck();
 
+    Truck findTruckById(Long id);
+
 }

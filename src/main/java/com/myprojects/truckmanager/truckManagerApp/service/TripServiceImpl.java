@@ -25,13 +25,12 @@ public class TripServiceImpl implements TripService {
         return availableTrips;
     }
 
-
     /**
      * Creates all trips for truck with available arrival points
      * @param truck current truck
      * @return list of trips
      */
-    public List<Trip> createAvailableTrips(Truck truck) {
+    private List<Trip> createAvailableTrips(Truck truck) {
 
         List<Trip> tripsForTruck = new ArrayList<>();
         List<Location> allLocations = locationService.getAllLocations();

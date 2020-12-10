@@ -1,4 +1,4 @@
-package com.myprojects.truckmanager.truckManagerApp.authentication;
+package com.myprojects.truckmanager.truckManagerApp.validation;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
