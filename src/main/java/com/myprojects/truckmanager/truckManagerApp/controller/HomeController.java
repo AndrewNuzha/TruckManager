@@ -1,17 +1,17 @@
 package com.myprojects.truckmanager.truckManagerApp.controller;
 
-import com.myprojects.truckmanager.truckManagerApp.validation.IAuthenticationFacade;
 import com.myprojects.truckmanager.truckManagerApp.exception_handler.NoSuchTruckException;
-import com.myprojects.truckmanager.truckManagerApp.model.*;
-import com.myprojects.truckmanager.truckManagerApp.service.TripService;
+import com.myprojects.truckmanager.truckManagerApp.model.Company;
+import com.myprojects.truckmanager.truckManagerApp.model.Truck;
+import com.myprojects.truckmanager.truckManagerApp.model.TruckDetails;
+import com.myprojects.truckmanager.truckManagerApp.model.User;
 import com.myprojects.truckmanager.truckManagerApp.service.UserService;
+import com.myprojects.truckmanager.truckManagerApp.validation.IAuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.List;
 
 @Controller
 public class HomeController {
@@ -20,8 +20,6 @@ public class HomeController {
     private IAuthenticationFacade authenticationFacade;
     @Autowired
     private UserService userService;
-    @Autowired
-    private TripService tripService;
 
     @GetMapping("/login")
     public String showLoginForm() {
@@ -30,7 +28,7 @@ public class HomeController {
 
     @GetMapping("/homepage")
     public String showHomeForm(Model model) {
-        User user = userService.findUserWithCompanyByNickName(getAuthenticationName());
+        User user = userService.findUserWithCompanyIdByNickName(getAuthenticationName());
         Company company = user.getCompany();
         model.addAttribute("username", user.getNickName());
         model.addAttribute("balance", company.getBalance());
@@ -46,28 +44,6 @@ public class HomeController {
         model.addAttribute("balance", company.getBalance());
         model.addAttribute("trucks", company.getTrucks());
         return "trucks";
-    }
-
-    //TODO remove this method
-    @GetMapping("/trips")
-    public String showTripsForm(Model model) {
-        User user = userService.findUserWithCompanyByNickName(getAuthenticationName());
-        List<Trip> trips = tripService.prepareTripsForUser(user);
-
-        Company company = user.getCompany();
-        Truck one = company.getTrucks().get(0);
-        Truck two = company.getTrucks().get(1);
-
-        for (Trip trip : trips) {
-            trip.addTruckToTrip(one);
-            trip.addTruckToTrip(two);
-        }
-
-        model.addAttribute("username", user.getNickName());
-        model.addAttribute("balance", user.getCompany().getBalance());
-        model.addAttribute("trucks", user.getCompany().getTrucks());
-        model.addAttribute("trips", trips);
-        return "trips";
     }
 
     @GetMapping("/truck-details/{id}")

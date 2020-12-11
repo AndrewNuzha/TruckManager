@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:align-content="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet"
@@ -7,7 +7,7 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
 
-    <title>Trips</title>
+    <title>Create shipment</title>
 </head>
 <body>
 
@@ -21,8 +21,6 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 
-<!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">-->
-
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #f48024;">
 
     <div class="navbar-brand" id="logoBox">
@@ -33,7 +31,8 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown active">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
                     My company
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -48,7 +47,7 @@
                 <a class="nav-link" href="/trucks">Trucks <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="/trips">Available trips</a>
+                <a class="nav-link" href="#">Available trips</a>
             </li>
             <li class="nav-item active" id="balanceItem">
                 <span class="nav-link" th:text="${balance}">Balance</span>
@@ -72,47 +71,37 @@
         </ul>
     </div>
 </nav>
-
-<div th:switch="${trips}">
-    <h3 th:case="null">You have no available trips now</h3>
-     <div th:case="*">
+<div th:switch="${shipments}">
+    <h3 th:case="null">You have no available shipments now</h3>
+    <div th:case="*">
         <table class="table table-hover">
             <thead>
             <tr class="headT">
-                <th class="tripHead" scope="col">Departure</th>
-                <th class="tripHead" scope="col">Arrival</th>
-                <th class="tripHead" scope="col">Delivery cost</th>
-                <th class="tripHead" scope="col">Distance</th>
-                <th class="tripHead" scope="col">Category</th>
-<!--                <th class="tripHead" scope="col">Truck</th>-->
-<!--                <th class="tripHead" scope="col">Options</th>-->
+                <th class="shipmentHead" scope="col">Arrival City</th>
+                <th class="shipmentHead" scope="col">Distance</th>
+                <th class="shipmentHead" scope="col">Delivery Income</th>
+                <th class="shipmentHead" scope="col">Category</th>
+                <th class="shipmentHead" scope="col">Options</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="trip : ${trips}">
-                <td class="tripContent" th:text="${trip.departureLocation}"></td>
-                <td class="tripContent" th:text="${trip.arrivalLocation}"></td>
-                <td class="tripContent" th:text="${trip.deliveryCost}"></td>
-                <td class="tripContent" th:text="${trip.distance}"></td>
-                <td class="tripContent" th:text="${trip.category}"></td>
-<!--                <td class="tripContent"><a href="#" class="btn btn-primary btn-sm" id="detailsButton"-->
-<!--                                           role="button" aria-pressed="true">Take order</a></td>-->
-                <td class="tripContent"><div class="col-lg-3" th:object="${trip}">
-                    <select class="form-control" id="testOrder" name="testOrder">
-                        <option value="">Select Test Order</option>
-                        <option th:each="truck : ${trip.trucks}"
-                                th:value="${truck.id}"
-                                th:text="${truck.model}+' : '+${truck.mileage}"></option>
-                    </select>
-                </div></td>
-                <td class="tripContent"><a href="#" class="btn btn-primary btn-sm" id="detailsButton"
-                                                             role="button" aria-pressed="true">Take order</a></td>
+            <tr th:each="shipment : ${shipments}">
+                <form class="shipment-form" th:action="@{/create-shipment}" method="post">
+                    <input hidden="hidden" readonly type="number" th:name="truckId" th:value="${shipment.truckId}"/>
+                    <input hidden="hidden" readonly type="number" th:name="companyId" th:value="${shipment.companyId}"/>
+                    <input hidden="hidden" readonly type="number" th:name="departureLocationId" th:value="${shipment.departureLocationId}"/>
+                    <input hidden="hidden" readonly type="number" th:name="arrivalLocationId" th:value="${shipment.arrivalLocationId}"/>
+                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="text" th:name="arrivalLocationCity" th:value="${shipment.arrivalLocationCity}"/></td>
+                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="number" th:name="distance" th:value="${shipment.distance}"/></td>
+                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="number" th:name="income" th:value="${shipment.income}"/></td>
+                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="text" th:name="category" th:value="${shipment.category}"/></td>
+                    <td class="shipmentContent"><button class="btn btn-primary btn-sm" id="detailsButton" type="submit">Take this order</button></td>
+                </form>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
-
 </body>
 </html>
 
@@ -120,6 +109,7 @@
     #rightDropdown {
         padding-right: 10%;
     }
+
     .dropdown-item:hover {
         background-color: #ffc396;
     }
@@ -144,12 +134,18 @@
         padding-left: 150px;
     }
 
-    .tripHead {
+    .shipmentHead {
         text-align: center;
         background-color: #cdcdcd;
     }
 
-    .tripContent {
+    .shipmentContent {
+        text-align: center;
+    }
+
+    .shipmentReadonly {
+        border: none;
+        background-color: inherit;
         text-align: center;
     }
 
@@ -159,10 +155,6 @@
 
     #detailsButton:hover {
         background-color: #f48024;
-    }
-
-    .form-control {
-        width: auto !important;
     }
 
 </style>

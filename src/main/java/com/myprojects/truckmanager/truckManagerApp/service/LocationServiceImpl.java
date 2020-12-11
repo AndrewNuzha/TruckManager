@@ -1,15 +1,13 @@
 package com.myprojects.truckmanager.truckManagerApp.service;
 
 import com.myprojects.truckmanager.truckManagerApp.model.Location;
-import com.myprojects.truckmanager.truckManagerApp.model.Truck;
 import com.myprojects.truckmanager.truckManagerApp.repository.LocationRepository;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.commons.math3.util.Precision;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LocationServiceImpl implements LocationService {
@@ -18,15 +16,6 @@ public class LocationServiceImpl implements LocationService {
 
     @Autowired
     private LocationRepository locationRepository;
-
-    @Override
-    public List<Location> getLocationsForTruck(Truck truck) {
-        List<Location> collect = getAllLocations().stream().filter(loc -> !loc.getCity().equals(truck.getDetails()
-                .getCurrentLocation().getCity()))
-                .collect(Collectors.toList());
-        return collect;
-        //TODO add filter for distance before service
-    }
 
     @Override
     public Float calculateDistance(Location departure, Location arrival) {

@@ -49,7 +49,7 @@
                 <a class="nav-link" href="/trucks">Trucks <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="/trips">Available trips</a>
+                <a class="nav-link" href="#">Available trips</a>
             </li>
             <li class="nav-item active" id="balanceItem">
                 <span class="nav-link" th:text="${balance}">Balance</span>
@@ -96,12 +96,18 @@
                 <td class="truckContent" th:text="${truck.category}"></td>
                 <td class="truckContent" th:text="${truck.status}"></td>
                 <td class="truckContent">
-                    <a th:href="@{truck-details/{id}(id=${truck.id})}"
-                       class="btn btn-primary btn-sm" id="detailsButton" role="button"
-                       aria-pressed="true">Details</a>
-                    <a th:href="@{create-shipment/{id}(id=${truck.id})}"
-                       class="btn btn-primary btn-sm" id="newShipmentButton" role="button"
-                       aria-pressed="true">New shipment</a>
+                    <span>
+                        <a th:href="@{truck-details/{id}(id=${truck.id})}"
+                           class="btn btn-primary btn-sm" id="detailsButton" role="button"
+                           aria-pressed="true">Details</a>
+                    </span>
+                    <span th:switch="${truck.status}">
+                        <span th:case="'Available'">
+                            <a th:href="@{create-shipment/{id}(id=${truck.id})}"
+                               class="btn btn-primary btn-sm" id="newShipmentButton" role="button"
+                               aria-pressed="true">New shipment</a>
+                        </span>
+                    </span>
                 </td>
             </tr>
             </tbody>

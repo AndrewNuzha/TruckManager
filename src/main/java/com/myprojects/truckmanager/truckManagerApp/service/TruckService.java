@@ -10,4 +10,6 @@ public interface TruckService {
 
     Truck findTruckById(Long id);
 
+    void updateTruckStatus(String newStatus, Long id);
+
 }

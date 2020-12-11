@@ -18,6 +18,10 @@ public class Shipment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "distance")
+    private Float distance;
+    @Column(name = "income")
+    private Integer income;
     @Column(name = "category")
     private String category;
     @Column(name = "departure_time")

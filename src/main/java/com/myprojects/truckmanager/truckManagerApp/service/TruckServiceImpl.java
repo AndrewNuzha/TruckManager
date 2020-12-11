@@ -55,6 +55,12 @@ public class TruckServiceImpl implements TruckService {
 
     @Override
     @Transactional
+    public void updateTruckStatus(String newStatus, Long id) {
+        truckRepository.updateTruckStatus(newStatus, id);
+    }
+
+    @Override
+    @Transactional
     public void saveTruck(Truck truck) {
         truckRepository.save(truck);
     }
