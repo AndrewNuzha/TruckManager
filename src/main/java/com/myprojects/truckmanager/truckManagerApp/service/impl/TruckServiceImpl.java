@@ -1,8 +1,10 @@
-package com.myprojects.truckmanager.truckManagerApp.service;
+package com.myprojects.truckmanager.truckManagerApp.service.impl;
 
 import com.myprojects.truckmanager.truckManagerApp.model.*;
 import com.myprojects.truckmanager.truckManagerApp.repository.TruckDetailsRepository;
 import com.myprojects.truckmanager.truckManagerApp.repository.TruckRepository;
+import com.myprojects.truckmanager.truckManagerApp.service.LocationService;
+import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +59,12 @@ public class TruckServiceImpl implements TruckService {
     @Transactional
     public void updateTruckStatus(String newStatus, Long id) {
         truckRepository.updateTruckStatus(newStatus, id);
+    }
+
+    @Override
+    @Transactional
+    public void updateTruckMileage(Long newMileage, Long id) {
+        truckRepository.updateTruckMileage(newMileage, id);
     }
 
     @Override

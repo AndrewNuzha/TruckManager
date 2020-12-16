@@ -1,6 +1,7 @@
 package com.myprojects.truckmanager.truckManagerApp.service;
 
 import com.myprojects.truckmanager.truckManagerApp.dto.NewShipmentDTO;
+import com.myprojects.truckmanager.truckManagerApp.dto.ShipmentInfoDTO;
 import com.myprojects.truckmanager.truckManagerApp.model.Shipment;
 import com.myprojects.truckmanager.truckManagerApp.model.Truck;
 
@@ -13,5 +14,13 @@ public interface ShipmentService {
     Shipment createNewShipment(NewShipmentDTO newShipmentDTO);
 
     Shipment save(Shipment shipment);
+
+    List<Shipment> findShipmentsByCompanyId(Long id);
+
+    List<ShipmentInfoDTO> prepareShipmentsData(List<Shipment> shipments);
+
+    List<Shipment> getActualShipments(List<Shipment> shipments);
+
+    void deleteShipment(Long id);
 
 }

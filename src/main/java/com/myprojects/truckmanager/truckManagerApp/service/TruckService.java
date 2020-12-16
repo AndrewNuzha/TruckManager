@@ -12,4 +12,6 @@ public interface TruckService {
 
     void updateTruckStatus(String newStatus, Long id);
 
+    void updateTruckMileage(Long newMileage, Long id);
+
 }

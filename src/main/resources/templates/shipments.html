@@ -7,7 +7,7 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
 
-    <title>Create shipment</title>
+    <title>Shipments</title>
 </head>
 <body>
 
@@ -20,6 +20,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
+<!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">-->
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #f48024;">
 
@@ -47,7 +49,7 @@
                 <a class="nav-link" href="/trucks">Trucks <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="#">Available trips</a>
+                <a class="nav-link" href="/shipments">Shipments</a>
             </li>
             <li class="nav-item active" id="balanceItem">
                 <span class="nav-link" th:text="${balance}">Balance</span>
@@ -71,37 +73,37 @@
         </ul>
     </div>
 </nav>
+
 <div th:switch="${shipments}">
-    <h3 th:case="null">You have no available shipments now</h3>
+    <h2 th:case="null">You have no active shipments</h2>
     <div th:case="*">
         <table class="table table-hover">
             <thead>
             <tr class="headT">
-                <th class="shipmentHead" scope="col">Arrival City</th>
-                <th class="shipmentHead" scope="col">Distance</th>
-                <th class="shipmentHead" scope="col">Delivery Income</th>
-                <th class="shipmentHead" scope="col">Category</th>
-                <th class="shipmentHead" scope="col">Options</th>
+                <th class="truckHead" scope="col">Departure City</th>
+                <th class="truckHead" scope="col">Arrival City</th>
+                <th class="truckHead" scope="col">Income</th>
+                <th class="truckHead" scope="col">Distance progress</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="shipment : ${shipments}">
-                <form class="shipment-form" th:action="@{/create-shipment}" method="post">
-                    <input hidden="hidden" readonly type="number" th:name="truckId" th:value="${shipment.truckId}"/>
-                    <input hidden="hidden" readonly type="number" th:name="companyId" th:value="${shipment.companyId}"/>
-                    <input hidden="hidden" readonly type="number" th:name="departureLocationId" th:value="${shipment.departureLocationId}"/>
-                    <input hidden="hidden" readonly type="number" th:name="arrivalLocationId" th:value="${shipment.arrivalLocationId}"/>
-                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="text" th:name="arrivalLocationCity" th:value="${shipment.arrivalLocationCity}"/></td>
-                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="number" th:name="distance" th:value="${shipment.distance}"/></td>
-                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="number" th:name="income" th:value="${shipment.income}"/></td>
-                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="text" th:name="category" th:value="${shipment.category}"/></td>
-                    <td class="shipmentContent"><button class="btn btn-primary btn-sm" id="detailsButton" type="submit">Take this order</button></td>
-                </form>
+                <td class="truckContent" th:text="${shipment.departureCity}"></td>
+                <td class="truckContent" th:text="${shipment.arrivalCity}"></td>
+                <td class="truckContent" th:text="${shipment.income}"></td>
+                <td class="truckContent">
+                    <div class="progress active">
+                        <div class="progress-bar progress-bar-striped bg-warning" role="progressbar"
+                             aria-valuemin="0" aria-valuemax="100" th:attr="aria-valuenow=${shipment.estimatedDistance}"
+                             th:style="'width:'+ ${shipment.estimatedDistance}+'%;'"></div>
+                    </div>
+                </td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+
 </body>
 </html>
 
@@ -134,27 +136,13 @@
         padding-left: 150px;
     }
 
-    .shipmentHead {
+    .truckHead {
         text-align: center;
         background-color: #cdcdcd;
     }
 
-    .shipmentContent {
+    .truckContent {
         text-align: center;
-    }
-
-    .shipmentReadonly {
-        border: none;
-        background-color: inherit;
-        text-align: center;
-    }
-
-    #detailsButton {
-        background-color: #ff995c;
-    }
-
-    #detailsButton:hover {
-        background-color: #f48024;
     }
 
 </style>

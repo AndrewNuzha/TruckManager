@@ -1,8 +1,13 @@
-package com.myprojects.truckmanager.truckManagerApp.service;
+package com.myprojects.truckmanager.truckManagerApp.service.impl;
 
+import com.myprojects.truckmanager.truckManagerApp.dto.ShipmentInfoDTO;
 import com.myprojects.truckmanager.truckManagerApp.dto.NewShipmentDTO;
 import com.myprojects.truckmanager.truckManagerApp.model.*;
 import com.myprojects.truckmanager.truckManagerApp.repository.ShipmentRepository;
+import com.myprojects.truckmanager.truckManagerApp.service.CompanyService;
+import com.myprojects.truckmanager.truckManagerApp.service.LocationService;
+import com.myprojects.truckmanager.truckManagerApp.service.ShipmentService;
+import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +69,57 @@ public class ShipmentServiceImpl implements ShipmentService {
             }
         }
         return availableShipments;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Shipment> findShipmentsByCompanyId(Long id) {
+        return shipmentRepository.findShipmentByCompany_Id(id);
+    }
+
+    @Override
+    public List<ShipmentInfoDTO> prepareShipmentsData(List<Shipment> shipments) {
+        List<ShipmentInfoDTO> shipmentsInfoList = new ArrayList<>();
+        for (Shipment shipment : shipments) {
+            ShipmentInfoDTO shipmentInfo = new ShipmentInfoDTO();
+            shipmentInfo.setDepartureCity(shipment.getDepartureLocation().getCity());
+            shipmentInfo.setArrivalCity(shipment.getArrivalLocation().getCity());
+            shipmentInfo.setIncome(shipment.getIncome());
+            shipmentInfo.setEstimatedDistance(locationService.calculateDistanceProgress(shipment.getDistance(),
+                    shipment.getDepartureTime()));
+            shipmentsInfoList.add(shipmentInfo);
+        }
+        return shipmentsInfoList;
+    }
+
+    @Override
+    public List<Shipment> getActualShipments(List<Shipment> shipments) {
+        List<Shipment> actualShipments = new ArrayList<>();
+        for (int i = 0; i < shipments.size(); i++) {
+            Shipment shipment = shipments.get(i);
+            if (locationService.isCompletionTime(shipment.getDistance(), shipment.getDepartureTime())) {
+                completeShipment(shipment);
+            } else {
+                actualShipments.add(shipment);
+            }
+        }
+        return actualShipments;
+    }
+
+    public void completeShipment(Shipment shipment) {
+        truckService.updateTruckStatus(TruckStatus.AVAILABLE.getStatus, shipment.getTruck().getId());
+        truckService.updateTruckMileage(shipment.getTruck().getMileage() + 1000,
+                shipment.getTruck().getId());
+        Company company = shipment.getCompany();
+        company.setBalance(company.getBalance() + shipment.getIncome());
+
+        deleteShipment(shipment.getId());
+    }
+
+    @Override
+    @Transactional
+    public void deleteShipment(Long id) {
+        shipmentRepository.deleteById(id);
     }
 
     @Override

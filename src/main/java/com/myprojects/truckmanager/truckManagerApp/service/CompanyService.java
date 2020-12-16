@@ -10,4 +10,6 @@ public interface CompanyService {
 
     Company findCompanyById(Long id);
 
+    void saveCompany(Company company);
+
 }

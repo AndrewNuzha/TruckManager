@@ -1,8 +1,10 @@
-package com.myprojects.truckmanager.truckManagerApp.service;
+package com.myprojects.truckmanager.truckManagerApp.service.impl;
 
 import com.myprojects.truckmanager.truckManagerApp.model.Company;
 import com.myprojects.truckmanager.truckManagerApp.model.Truck;
 import com.myprojects.truckmanager.truckManagerApp.repository.CompanyRepository;
+import com.myprojects.truckmanager.truckManagerApp.service.CompanyService;
+import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,5 +52,11 @@ public class CompanyServiceImpl implements CompanyService {
     @Transactional(readOnly = true)
     public Company findCompanyById(Long id) {
         return companyRepository.findCompanyById(id);
+    }
+
+    @Override
+    @Transactional
+    public void saveCompany(Company company) {
+        companyRepository.save(company);
     }
 }

@@ -1,10 +1,12 @@
-package com.myprojects.truckmanager.truckManagerApp.service;
+package com.myprojects.truckmanager.truckManagerApp.service.impl;
 
 import com.myprojects.truckmanager.truckManagerApp.dto.UserRegistrationDTO;
 import com.myprojects.truckmanager.truckManagerApp.model.Company;
 import com.myprojects.truckmanager.truckManagerApp.model.Role;
 import com.myprojects.truckmanager.truckManagerApp.model.User;
 import com.myprojects.truckmanager.truckManagerApp.repository.UserRepository;
+import com.myprojects.truckmanager.truckManagerApp.service.CompanyService;
+import com.myprojects.truckmanager.truckManagerApp.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

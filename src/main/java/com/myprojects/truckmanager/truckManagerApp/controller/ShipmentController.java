@@ -1,8 +1,10 @@
 package com.myprojects.truckmanager.truckManagerApp.controller;
 
 import com.myprojects.truckmanager.truckManagerApp.dto.NewShipmentDTO;
+import com.myprojects.truckmanager.truckManagerApp.dto.ShipmentInfoDTO;
 import com.myprojects.truckmanager.truckManagerApp.exception_handler.NoSuchTruckException;
 import com.myprojects.truckmanager.truckManagerApp.exception_handler.ShipmentCreationException;
+import com.myprojects.truckmanager.truckManagerApp.model.Company;
 import com.myprojects.truckmanager.truckManagerApp.model.Shipment;
 import com.myprojects.truckmanager.truckManagerApp.model.Truck;
 import com.myprojects.truckmanager.truckManagerApp.model.User;
@@ -57,7 +59,7 @@ public class ShipmentController {
             } else {
                 model.addAttribute("shipments", null);
             }
-            return "test-shipment-create";
+            return "create-shipment";
         }
     }
 
@@ -73,7 +75,17 @@ public class ShipmentController {
     }
 
     @GetMapping("/shipments")
-    public String showShipmentsForm() {
+    public String showShipmentsForm(Model model) {
+        User user = userService.findUserWithCompanyIdByNickName(getAuthenticationName());
+        Company company = user.getCompany();
+        List<Shipment> companyShipments = shipmentService.findShipmentsByCompanyId(company.getId());
+        List<Shipment> actualShipments = shipmentService.getActualShipments(companyShipments);
+        List<ShipmentInfoDTO> companyShipmentsInfo = shipmentService.prepareShipmentsData(actualShipments);
+        //здесь надо проверить время. Если оставшееся время прошло, то завершаем доставку и не показываем ее на фронте
+
+        model.addAttribute("shipments", companyShipmentsInfo);
+        model.addAttribute("username", user.getNickName());
+        model.addAttribute("balance", company.getBalance());
 
         return "shipments";
     }

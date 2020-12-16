@@ -47,7 +47,7 @@
                 <a class="nav-link" href="/trucks">Trucks <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="/trips">Available trips</a>
+                <a class="nav-link" href="#">Available trips</a>
             </li>
             <li class="nav-item active" id="balanceItem">
                 <span class="nav-link" th:text="${balance}">Balance</span>
@@ -71,42 +71,37 @@
         </ul>
     </div>
 </nav>
-<form action="#" th:action="@{/create-shipment}" th:object="${shipment}" method="post">
-    <input hidden="hidden" readonly type="number" th:field="*{truckId}" id="truckId" placeholder="ID">
-    <input hidden="hidden" readonly type="number" th:field="*{departureLocationId}" id="departureLocationId"
-           placeholder="ID">
-    <input hidden="hidden" readonly type="number" th:field="*{companyId}" id="companyId" placeholder="ID">
-    <div class="form-group row">
-        <label for="category" class="col-sm-2 col-form-label">Category</label>
-        <div class="col-sm-10">
-            <input class="form-control" type="text" placeholder="Category"
-                   id="category"
-                   readonly th:field="${shipment.category}">
-        </div>
+<div th:switch="${shipments}">
+    <h3 th:case="null">You have no available shipments now</h3>
+    <div th:case="*">
+        <table class="table table-hover">
+            <thead>
+            <tr class="headT">
+                <th class="shipmentHead" scope="col">Arrival City</th>
+                <th class="shipmentHead" scope="col">Distance</th>
+                <th class="shipmentHead" scope="col">Delivery Income</th>
+                <th class="shipmentHead" scope="col">Category</th>
+                <th class="shipmentHead" scope="col">Options</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="shipment : ${shipments}">
+                <form class="shipment-form" th:action="@{/create-shipment}" method="post">
+                    <input hidden="hidden" readonly type="number" th:name="truckId" th:value="${shipment.truckId}"/>
+                    <input hidden="hidden" readonly type="number" th:name="companyId" th:value="${shipment.companyId}"/>
+                    <input hidden="hidden" readonly type="number" th:name="departureLocationId" th:value="${shipment.departureLocationId}"/>
+                    <input hidden="hidden" readonly type="number" th:name="arrivalLocationId" th:value="${shipment.arrivalLocationId}"/>
+                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="text" th:name="arrivalLocationCity" th:value="${shipment.arrivalLocationCity}"/></td>
+                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="number" th:name="distance" th:value="${shipment.distance}"/></td>
+                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="number" th:name="income" th:value="${shipment.income}"/></td>
+                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="text" th:name="category" th:value="${shipment.category}"/></td>
+                    <td class="shipmentContent"><button class="btn btn-primary btn-sm" id="detailsButton" type="submit">Take this order</button></td>
+                </form>
+            </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="form-group row">
-        <label for="arrivalLocation" class="col-sm-2 col-form-label">Choose arrival location</label>
-        <div class="col-sm-10">
-            <select class="form-control" id="arrivalLocation" name="testOrder" th:field="*{arrivalLocationId}">
-                <option th:each="route : ${routes}" th:value="${route.arrivalLocationId}"
-                        th:text="${route.arrivalLocationCity + ' ' + route.distance + ' km'}"></option>
-            </select>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="arrivalLocation" class="col-sm-2 col-form-label"></label>
-        <div class="col-sm-10">
-            <div th:switch="${routes}">
-                <span th:case="null">This truck needs service</span>
-                <div th:case="*">
-                    <button type="submit" id="createShipmentButton" class="btn btn-success">Create shipment</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</form>
-
+</div>
 </body>
 </html>
 
@@ -139,12 +134,27 @@
         padding-left: 150px;
     }
 
-    .form-control {
-        width: 30%;
+    .shipmentHead {
+        text-align: center;
+        background-color: #cdcdcd;
     }
 
-    .form-group {
-        padding-left: 5%;
+    .shipmentContent {
+        text-align: center;
+    }
+
+    .shipmentReadonly {
+        border: none;
+        background-color: inherit;
+        text-align: center;
+    }
+
+    #detailsButton {
+        background-color: #ff995c;
+    }
+
+    #detailsButton:hover {
+        background-color: #f48024;
     }
 
 </style>
