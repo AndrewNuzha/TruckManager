@@ -79,15 +79,21 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     @Override
     public List<ShipmentInfoDTO> prepareShipmentsData(List<Shipment> shipments) {
+        int counter = 1;
         List<ShipmentInfoDTO> shipmentsInfoList = new ArrayList<>();
         for (Shipment shipment : shipments) {
             ShipmentInfoDTO shipmentInfo = new ShipmentInfoDTO();
+            shipmentInfo.setId(counter);
             shipmentInfo.setDepartureCity(shipment.getDepartureLocation().getCity());
             shipmentInfo.setArrivalCity(shipment.getArrivalLocation().getCity());
             shipmentInfo.setIncome(shipment.getIncome());
+            shipmentInfo.setDepartureTime(locationService.convertTimestampToLocalDateTime(shipment.getDepartureTime()));
+            shipmentInfo.setArrivalTime(locationService.calculateShipmentArrivalTime(shipment.getDistance(),
+                    shipment.getDepartureTime()));
             shipmentInfo.setEstimatedDistance(locationService.calculateDistanceProgress(shipment.getDistance(),
                     shipment.getDepartureTime()));
             shipmentsInfoList.add(shipmentInfo);
+            counter++;
         }
         return shipmentsInfoList;
     }
@@ -97,7 +103,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         List<Shipment> actualShipments = new ArrayList<>();
         for (int i = 0; i < shipments.size(); i++) {
             Shipment shipment = shipments.get(i);
-            if (locationService.isCompletionTime(shipment.getDistance(), shipment.getDepartureTime())) {
+            if (locationService.isShipmentCompleted(shipment.getDistance(), shipment.getDepartureTime())) {
                 completeShipment(shipment);
             } else {
                 actualShipments.add(shipment);

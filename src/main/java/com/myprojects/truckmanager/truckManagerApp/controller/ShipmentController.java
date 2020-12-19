@@ -22,6 +22,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -81,12 +82,11 @@ public class ShipmentController {
         List<Shipment> companyShipments = shipmentService.findShipmentsByCompanyId(company.getId());
         List<Shipment> actualShipments = shipmentService.getActualShipments(companyShipments);
         List<ShipmentInfoDTO> companyShipmentsInfo = shipmentService.prepareShipmentsData(actualShipments);
-        //здесь надо проверить время. Если оставшееся время прошло, то завершаем доставку и не показываем ее на фронте
 
         model.addAttribute("shipments", companyShipmentsInfo);
         model.addAttribute("username", user.getNickName());
         model.addAttribute("balance", company.getBalance());
-
+        //model.addAttribute("time", LocalDateTime.now().plusMinutes(1));
         return "shipments";
     }
 

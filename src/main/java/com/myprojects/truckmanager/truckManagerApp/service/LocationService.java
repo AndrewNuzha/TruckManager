@@ -2,7 +2,9 @@ package com.myprojects.truckmanager.truckManagerApp.service;
 
 import com.myprojects.truckmanager.truckManagerApp.model.Location;
 
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface LocationService {
@@ -15,6 +17,10 @@ public interface LocationService {
 
     Float calculateDistanceProgress(Float fullDistance, Timestamp departureTime);
 
-    boolean isCompletionTime(Float fullDistance, Timestamp departureTime);
+    LocalDateTime calculateShipmentArrivalTime(Float fullDistance, Timestamp departureTime);
+
+    LocalDateTime convertTimestampToLocalDateTime(Timestamp timestamp);
+
+    boolean isShipmentCompleted(Float fullDistance, Timestamp departureTime);
 
 }

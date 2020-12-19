@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.List;
@@ -21,7 +20,7 @@ public class LocationServiceImpl implements LocationService {
 
     private final int RADIUS = 6371;
     private final int SPEED = 90;
-    private final int SPEED_COEFFICIENT = 13;
+    private final int SPEED_COEFFICIENT = 20;
 
     @Autowired
     private LocationRepository locationRepository;
@@ -54,13 +53,22 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public boolean isCompletionTime(Float fullDistance, Timestamp departureTime) {
+    public boolean isShipmentCompleted(Float fullDistance, Timestamp departureTime) {
+        LocalDateTime shipmentCompletingTime = calculateShipmentArrivalTime(fullDistance, departureTime);
+        LocalDateTime now = LocalDateTime.now();
+        return shipmentCompletingTime.isBefore(now);
+    }
+
+    @Override
+    public LocalDateTime calculateShipmentArrivalTime(Float fullDistance, Timestamp departureTime) {
         LocalDateTime departureConvertedTime = resolveCurrentTimeZone(departureTime);
         float shipmentTimeInSeconds = (fullDistance / (SPEED * SPEED_COEFFICIENT)) * 3600;
-        LocalDateTime shipmentCompletingTime = departureConvertedTime.plusSeconds((long) shipmentTimeInSeconds);
-        LocalDateTime now = LocalDateTime.now();
+        return departureConvertedTime.plusSeconds((long) shipmentTimeInSeconds);
+    }
 
-        return shipmentCompletingTime.isBefore(now);
+    @Override
+    public LocalDateTime convertTimestampToLocalDateTime(Timestamp timestamp) {
+        return resolveCurrentTimeZone(timestamp);
     }
 
     @Override
