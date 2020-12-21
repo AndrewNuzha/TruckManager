@@ -1,13 +1,14 @@
 package com.myprojects.truckmanager.truckManagerApp.service.impl;
 
-import com.myprojects.truckmanager.truckManagerApp.dto.ShipmentInfoDTO;
 import com.myprojects.truckmanager.truckManagerApp.dto.NewShipmentDTO;
+import com.myprojects.truckmanager.truckManagerApp.dto.ShipmentInfoDTO;
 import com.myprojects.truckmanager.truckManagerApp.model.*;
 import com.myprojects.truckmanager.truckManagerApp.repository.ShipmentRepository;
 import com.myprojects.truckmanager.truckManagerApp.service.CompanyService;
 import com.myprojects.truckmanager.truckManagerApp.service.LocationService;
 import com.myprojects.truckmanager.truckManagerApp.service.ShipmentService;
 import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipment.setDepartureTime(new Timestamp(new Date().getTime()));
         shipment.setDepartureLocation(locationService.getLocationById(newShipmentDTO.getDepartureLocationId()));
         shipment.setArrivalLocation(locationService.getLocationById(newShipmentDTO.getArrivalLocationId()));
-        shipment.setTruck(truckService.findTruckById(newShipmentDTO.getTruckId()));
+        shipment.setTruck(truckService.findTruckWithDetailsById(newShipmentDTO.getTruckId()));
         shipment.setCompany(companyService.findCompanyById(newShipmentDTO.getCompanyId()));
 
         return shipment;
@@ -64,8 +65,10 @@ public class ShipmentServiceImpl implements ShipmentService {
                 shipmentDTO.setArrivalLocationCity(location.getCity());
                 shipmentDTO.setDistance(distance);
                 shipmentDTO.setCategory(TruckCategory.VAN.getCategory);
-                shipmentDTO.setIncome(1600); //TODO add price calculation service
+                shipmentDTO.setIncome(calculateShipmentIncome(distance, truck.getCategory(), truck.getMaxLoad()));
                 availableShipments.add(shipmentDTO);
+            } else {
+                truckService.updateTruckStatus(TruckStatus.SERVICE.getStatus, truck.getId());
             }
         }
         return availableShipments;
@@ -90,8 +93,6 @@ public class ShipmentServiceImpl implements ShipmentService {
             shipmentInfo.setDepartureTime(locationService.convertTimestampToLocalDateTime(shipment.getDepartureTime()));
             shipmentInfo.setArrivalTime(locationService.calculateShipmentArrivalTime(shipment.getDistance(),
                     shipment.getDepartureTime()));
-            shipmentInfo.setEstimatedDistance(locationService.calculateDistanceProgress(shipment.getDistance(),
-                    shipment.getDepartureTime()));
             shipmentsInfoList.add(shipmentInfo);
             counter++;
         }
@@ -112,16 +113,6 @@ public class ShipmentServiceImpl implements ShipmentService {
         return actualShipments;
     }
 
-    public void completeShipment(Shipment shipment) {
-        truckService.updateTruckStatus(TruckStatus.AVAILABLE.getStatus, shipment.getTruck().getId());
-        truckService.updateTruckMileage(shipment.getTruck().getMileage() + 1000,
-                shipment.getTruck().getId());
-        Company company = shipment.getCompany();
-        company.setBalance(company.getBalance() + shipment.getIncome());
-
-        deleteShipment(shipment.getId());
-    }
-
     @Override
     @Transactional
     public void deleteShipment(Long id) {
@@ -133,5 +124,25 @@ public class ShipmentServiceImpl implements ShipmentService {
     public Shipment save(Shipment shipment) {
         truckService.updateTruckStatus(TruckStatus.TRIP.getStatus, shipment.getTruck().getId());
         return shipmentRepository.save(shipment);
+    }
+
+    private void completeShipment(Shipment shipment) {
+        truckService.updateTruckStatus(TruckStatus.AVAILABLE.getStatus, shipment.getTruck().getId());
+        truckService.updateTruckMileage(shipment.getTruck(), shipment.getDistance());
+        truckService.updateTruckLocation(shipment.getArrivalLocation(), shipment.getTruck().getId());
+        Company company = shipment.getCompany();
+        company.setBalance(company.getBalance() + shipment.getIncome());
+
+        deleteShipment(shipment.getId());
+    }
+
+    private Float calculateShipmentIncome(float distance, String category, Integer maxLoad) {
+        if (category.equals(TruckCategory.VAN.getCategory)) {
+            return Precision.round(0.06F * distance * maxLoad, 2);
+        } else if (category.equals(TruckCategory.CONTAINER.getCategory)){
+            return Precision.round(0.075F * distance * maxLoad, 2);
+        } else {
+            return 0F;
+        }
     }
 }

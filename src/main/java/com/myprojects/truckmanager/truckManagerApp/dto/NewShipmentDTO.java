@@ -19,6 +19,6 @@ public class NewShipmentDTO {
     private Long arrivalLocationId;
     private String arrivalLocationCity;
     private Float distance;
-    private Integer income;
+    private Float income;
     private String category;
 }

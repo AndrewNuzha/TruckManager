@@ -25,8 +25,10 @@ public class TruckServiceImpl implements TruckService {
 
     /**
      * Creates new starter truck with details for a new company
+     *
      * @return created truck
      */
+    //TODO add ready truck models
     @Override
     public Truck createStarterTruck() {
         List<Location> allLocations = locationService.getAllLocations();
@@ -35,13 +37,14 @@ public class TruckServiceImpl implements TruckService {
 
         Truck truck = new Truck();
         truck.setModel("Scania RX100");
-        truck.setFuelConsumption(0.41f);
-        truck.setMileage(0L);
         truck.setCategory(TruckCategory.VAN.getCategory);
+        truck.setMaxLoad(10);
         truck.setStatus(TruckStatus.AVAILABLE.getStatus);
 
         TruckDetails truckDetails = new TruckDetails();
-        truckDetails.setMileageBeforeService(25000L);
+        truckDetails.setMileage(0F);
+        truckDetails.setMileageBeforeService(25000F);
+        truckDetails.setFuelConsumption(0.5F);
         truckDetails.setCurrentLocation(starterLocation);
         truckDetails.setProductionYear(new Timestamp(new Date().getTime()));
 
@@ -51,7 +54,7 @@ public class TruckServiceImpl implements TruckService {
 
     @Override
     @Transactional(readOnly = true)
-    public Truck findTruckById(Long id) {
+    public Truck findTruckWithDetailsById(Long id) {
         return truckRepository.findTruckById(id);
     }
 
@@ -63,8 +66,21 @@ public class TruckServiceImpl implements TruckService {
 
     @Override
     @Transactional
-    public void updateTruckMileage(Long newMileage, Long id) {
-        truckRepository.updateTruckMileage(newMileage, id);
+    public void updateTruckMileage(Truck truck, Float passedDistance) {
+        float distanceBeforeService = 0f;
+        if (truck.getDetails().getMileageBeforeService() > passedDistance) {
+            distanceBeforeService = truck.getDetails().getMileageBeforeService() - passedDistance;
+        } else {
+            updateTruckStatus(TruckStatus.SERVICE.getStatus, truck.getId());
+        }
+        truckDetailsRepository.updateTruckMileage(truck.getDetails().getMileage() + passedDistance,
+                distanceBeforeService, truck.getId());
+    }
+
+    @Override
+    @Transactional
+    public void updateTruckLocation(Location location, Long truckId) {
+        truckDetailsRepository.updateTruckLocation(location, truckId);
     }
 
     @Override

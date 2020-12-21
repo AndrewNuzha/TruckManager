@@ -22,7 +22,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -32,8 +31,6 @@ public class ShipmentController {
     private IAuthenticationFacade authenticationFacade;
     @Autowired
     private UserService userService;
-    @Autowired
-    private LocationService locationService;
     @Autowired
     private TruckService truckService;
     @Autowired
@@ -48,7 +45,7 @@ public class ShipmentController {
     @GetMapping("/create-shipment/{id}")
     public String showCreateShipmentForm(@PathVariable("id") Long id, Model model) {
         User user = userService.findUserWithCompanyIdByNickName(getAuthenticationName());
-        Truck truck = truckService.findTruckById(id);
+        Truck truck = truckService.findTruckWithDetailsById(id);
         if (truck == null) {
             throw new NoSuchTruckException("There is no truck with ID=" + id);
         } else {
@@ -86,7 +83,6 @@ public class ShipmentController {
         model.addAttribute("shipments", companyShipmentsInfo);
         model.addAttribute("username", user.getNickName());
         model.addAttribute("balance", company.getBalance());
-        //model.addAttribute("time", LocalDateTime.now().plusMinutes(1));
         return "shipments";
     }
 

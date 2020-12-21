@@ -20,7 +20,7 @@ public class LocationServiceImpl implements LocationService {
 
     private final int RADIUS = 6371;
     private final int SPEED = 90;
-    private final int SPEED_COEFFICIENT = 20;
+    private final int SPEED_COEFFICIENT = 180;
 
     @Autowired
     private LocationRepository locationRepository;
@@ -39,17 +39,6 @@ public class LocationServiceImpl implements LocationService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         double distance = RADIUS * c;
         return (float) Precision.round(distance, 2);
-    }
-
-    @Override
-    public Float calculateDistanceProgress(Float fullDistance, Timestamp departureTime) {
-        LocalDateTime departureConvertedTime = resolveCurrentTimeZone(departureTime);
-        LocalDateTime now = LocalDateTime.now();
-        Duration duration = Duration.between(departureConvertedTime, now);
-        float hoursDuration = (float) duration.getSeconds() / 3600;
-        float passedKilometers = hoursDuration * SPEED * SPEED_COEFFICIENT;
-        float passedDistancePercentage = passedKilometers * 100 / fullDistance;
-        return Precision.round(passedDistancePercentage, 2);
     }
 
     @Override

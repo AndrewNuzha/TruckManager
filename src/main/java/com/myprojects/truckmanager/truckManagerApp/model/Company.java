@@ -21,7 +21,7 @@ public class Company {
     @Column(name = "name")
     private String name;
     @Column(name = "balance")
-    private Long balance;
+    private Float balance;
 
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "company", fetch = FetchType.LAZY)
@@ -31,7 +31,7 @@ public class Company {
             mappedBy = "company", fetch = FetchType.LAZY)
     private List<Shipment> shipments;
 
-    public Company(String name, Long balance) {
+    public Company(String name, Float balance) {
         this.name = name;
         this.balance = balance;
     }

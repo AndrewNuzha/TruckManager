@@ -21,12 +21,10 @@ public class Truck {
     private Long id;
     @Column(name = "model")
     private String model;
-    @Column(name = "fuel_consumption")
-    private Float fuelConsumption;
-    @Column(name = "mileage")
-    private Long mileage;
     @Column(name = "category")
     private String category;
+    @Column(name = "max_load")
+    private Integer maxLoad;
     @Column(name = "status")
     private String status;
 

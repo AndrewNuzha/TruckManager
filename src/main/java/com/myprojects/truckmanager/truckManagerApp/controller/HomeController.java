@@ -5,6 +5,7 @@ import com.myprojects.truckmanager.truckManagerApp.model.Company;
 import com.myprojects.truckmanager.truckManagerApp.model.Truck;
 import com.myprojects.truckmanager.truckManagerApp.model.TruckDetails;
 import com.myprojects.truckmanager.truckManagerApp.model.User;
+import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
 import com.myprojects.truckmanager.truckManagerApp.service.UserService;
 import com.myprojects.truckmanager.truckManagerApp.validation.IAuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class HomeController {
@@ -20,6 +22,8 @@ public class HomeController {
     private IAuthenticationFacade authenticationFacade;
     @Autowired
     private UserService userService;
+    @Autowired
+    private TruckService truckService;
 
     @GetMapping("/login")
     public String showLoginForm() {
@@ -47,20 +51,14 @@ public class HomeController {
     }
 
     @GetMapping("/truck-details/{id}")
-    public String showTruckDetailsForm(@PathVariable("id") Long id, Model model) {
-        User user = userService.findUserWithCompanyByNickName(getAuthenticationName());
-
-        Truck truck = user.getCompany().getTrucks().stream().filter(tr -> tr.getId().equals(id))
-                .findAny().orElse(null);
+    @ResponseBody
+    public TruckDetails showTruckDetailsForm(@PathVariable("id") Long id) {
+        Truck truck = truckService.findTruckWithDetailsById(id);
         if (truck == null) {
             throw new NoSuchTruckException("There is no truck with ID=" + id);
         } else {
             TruckDetails details = truck.getDetails();
-            model.addAttribute("details", details);
-            model.addAttribute("username", user.getNickName());
-            model.addAttribute("balance", user.getCompany().getBalance());
-            model.addAttribute("trucks", user.getCompany().getTrucks());
-            return "truck-details";
+            return truck.getDetails();
         }
     }
 

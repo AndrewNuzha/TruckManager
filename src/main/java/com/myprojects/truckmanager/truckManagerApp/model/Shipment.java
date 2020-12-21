@@ -21,7 +21,7 @@ public class Shipment {
     @Column(name = "distance")
     private Float distance;
     @Column(name = "income")
-    private Integer income;
+    private Float income;
     @Column(name = "category")
     private String category;
     @Column(name = "departure_time")

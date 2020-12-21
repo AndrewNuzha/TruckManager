@@ -11,9 +11,10 @@
 </head>
 <body>
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
+<script src="webjars/jquery/3.2.1/jquery.min.js"></script>
+<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"-->
+<!--        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"-->
+<!--        crossorigin="anonymous"></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
@@ -77,13 +78,12 @@
 <div th:switch="${trucks}">
     <h2 th:case="null">You have no trucks in garage</h2>
     <div th:case="*">
-        <table class="table table-hover">
+        <table class="table table-hover tTable">
             <thead>
             <tr class="headT">
                 <th class="truckHead" scope="col">Model</th>
-                <th class="truckHead" scope="col">Consumption</th>
-                <th class="truckHead" scope="col">Mileage</th>
                 <th class="truckHead" scope="col">Category</th>
+                <th class="truckHead" scope="col">Max. load</th>
                 <th class="truckHead" scope="col">Status</th>
                 <th class="truckHead" scope="col">Options</th>
             </tr>
@@ -91,15 +91,12 @@
             <tbody>
             <tr th:each="truck : ${trucks}">
                 <td class="truckContent" th:text="${truck.model}"></td>
-                <td class="truckContent" th:text="${truck.fuelConsumption}"></td>
-                <td class="truckContent" th:text="${truck.mileage}"></td>
                 <td class="truckContent" th:text="${truck.category}"></td>
+                <td class="truckContent" th:text="${truck.maxLoad}"></td>
                 <td class="truckContent" th:text="${truck.status}"></td>
                 <td class="truckContent">
                     <span>
-                        <a th:href="@{truck-details/{id}(id=${truck.id})}"
-                           class="btn btn-primary btn-sm" id="detailsButton" role="button"
-                           aria-pressed="true">Details</a>
+                        <a th:href="@{truck-details/{id}(id=${truck.id})}" class="btn btn-primary btn-sm dBtn">Details</a>
                     </span>
                     <span th:switch="${truck.status}">
                         <span th:case="'Available'">
@@ -114,6 +111,80 @@
         </table>
     </div>
 </div>
+
+<div class="myModal">
+    <div class="modal fade" id="truckDetails" tabindex="-1" role="dialog" aria-labelledby="truckDetails" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Truck details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group row">
+                            <label for="fuelConsumption" class="col-sm-6 col-form-label">Fuel consumption</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" placeholder="Fuel consumption"
+                                       id="fuelConsumption"
+                                       readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="mileage" class="col-sm-6 col-form-label">Total mileage</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" placeholder="Total mileage"
+                                       id="mileage"
+                                       readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="currentLocation" class="col-sm-6 col-form-label">Current location</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" placeholder="Current location"
+                                       id="currentLocation"
+                                       readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="mileageBeforeService" class="col-sm-6 col-form-label">Mileage before service</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" placeholder="Mileage before service"
+                                       id="mileageBeforeService"
+                                       readonly>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function (){
+        $('.tTable .dBtn').on('click', function (event){
+            event.preventDefault();
+            var href = $(this).attr('href');
+
+            $.get(href,function (detail){
+                var locationText = detail.currentLocation.country + ", " + detail.currentLocation.city;
+                $('.myModal #fuelConsumption').val(detail.fuelConsumption);
+                $('.myModal #mileage').val(detail.mileage);
+                $('.myModal #currentLocation').val(locationText);
+                $('.myModal #mileageBeforeService').val(detail.mileageBeforeService);
+            });
+
+            $('.myModal #truckDetails').modal();
+        });
+    });
+</script>
 
 </body>
 </html>

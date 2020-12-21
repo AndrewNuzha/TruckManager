@@ -27,7 +27,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company createNewCompany(String name) {
 
-        Company newCompany = new Company(name, 20000L);
+        Company newCompany = new Company(name, 20000F);
         Truck newTruck = truckService.createStarterTruck();
         newTruck.setCompany(newCompany);
         truckService.saveTruck(newTruck);

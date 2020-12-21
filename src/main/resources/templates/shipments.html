@@ -170,8 +170,6 @@
             percentage = percentage.toFixed(2);
 
             if (progressBar.getAttribute('aria-valuenow') < 100) {
-                // var currentCount = parseInt(progressBar.getAttribute('aria-valuenow'));
-                // var nextCount = currentCount + 1;
                 progressBar.setAttribute('aria-valuenow',percentage);
                 progressBar.setAttribute('style','width:'+Number(percentage)+'%');
             }

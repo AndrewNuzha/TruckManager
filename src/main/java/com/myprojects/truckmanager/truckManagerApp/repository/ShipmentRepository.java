@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
-    @EntityGraph(attributePaths = {"departureLocation", "arrivalLocation", "truck", "company"})
+    @EntityGraph(attributePaths = {"departureLocation", "arrivalLocation", "truck.details", "company"})
     List<Shipment> findShipmentByCompany_Id(Long id);
 
 }

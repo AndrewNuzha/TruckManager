@@ -18,8 +18,12 @@ public class TruckDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Column(name = "mileage")
+    private Float mileage;
     @Column(name = "mileage_before_service")
-    private Long mileageBeforeService;
+    private Float mileageBeforeService;
+    @Column(name = "fuel_consumption")
+    private Float fuelConsumption;
     @Column(name = "production_year")
     private Timestamp productionYear;
 

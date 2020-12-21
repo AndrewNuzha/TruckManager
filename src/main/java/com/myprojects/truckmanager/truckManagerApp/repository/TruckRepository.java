@@ -18,7 +18,4 @@ public interface TruckRepository extends JpaRepository<Truck, Long> {
     @Query("update Truck truck set truck.status = :status where truck.id = :id")
     void updateTruckStatus(@Param("status") String status, @Param("id") Long id);
 
-    @Modifying
-    @Query("update Truck truck set truck.mileage = :mileage where truck.id = :id")
-    void updateTruckMileage(@Param("mileage") Long mileage, @Param("id") Long id);
 }

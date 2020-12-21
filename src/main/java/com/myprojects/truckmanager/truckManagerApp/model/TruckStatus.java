@@ -2,7 +2,8 @@ package com.myprojects.truckmanager.truckManagerApp.model;
 
 public enum TruckStatus {
     AVAILABLE("Available"),
-    TRIP("Trip");
+    TRIP("Trip"),
+    SERVICE("Need service");
 
     public final String getStatus;
 

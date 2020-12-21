@@ -16,8 +16,7 @@ public class ShipmentInfoDTO {
     private Integer id;
     private String departureCity;
     private String arrivalCity;
-    private Integer income;
+    private Float income;
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
-    private Float estimatedDistance;
 }
