@@ -7,13 +7,10 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
 
-    <title>Create shipment</title>
+    <title>Truck store</title>
 </head>
 <body>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
+<script src="webjars/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
@@ -54,7 +51,6 @@
             </li>
             <li class="nav-item active" id="balanceItem">
                 <span class="nav-link" th:text="${balance}">Balance</span>
-                <!--                After replace it with link to balance module-->
             </li>
 
         </ul>
@@ -74,37 +70,82 @@
         </ul>
     </div>
 </nav>
-<div th:switch="${shipments}">
-    <h3 th:case="null">You have no available shipments now</h3>
-    <div th:case="*">
-        <table class="table table-hover">
-            <thead>
-            <tr class="headT">
-                <th class="shipmentHead" scope="col">Arrival City</th>
-                <th class="shipmentHead" scope="col">Distance</th>
-                <th class="shipmentHead" scope="col">Delivery Income</th>
-                <th class="shipmentHead" scope="col">Category</th>
-                <th class="shipmentHead" scope="col">Options</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="shipment : ${shipments}">
-                <form class="shipment-form" th:action="@{/create-shipment}" method="post">
-                    <input hidden="hidden" readonly type="number" th:name="truckId" th:value="${shipment.truckId}"/>
-                    <input hidden="hidden" readonly type="number" th:name="companyId" th:value="${shipment.companyId}"/>
-                    <input hidden="hidden" readonly type="number" th:name="departureLocationId" th:value="${shipment.departureLocationId}"/>
-                    <input hidden="hidden" readonly type="number" th:name="arrivalLocationId" th:value="${shipment.arrivalLocationId}"/>
-                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="text" th:name="arrivalLocationCity" th:value="${shipment.arrivalLocationCity}"/></td>
-                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="number" th:name="distance" th:value="${shipment.distance}"/></td>
-                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="number" th:name="income" th:value="${shipment.income}"/></td>
-                    <td class="shipmentContent"><input class="shipmentReadonly" readonly type="text" th:name="category" th:value="${shipment.category}"/></td>
-                    <td class="shipmentContent"><button class="btn btn-primary btn-sm" id="detailsButton" type="submit">Take this order</button></td>
-                </form>
-            </tr>
-            </tbody>
-        </table>
+<div class="alert alert-danger" role="alert" id="notEnoughBalance">
+    Not enough balance to buy this truck
+</div>
+<div class="alert alert-success" role="alert" id="success">
+    Not enough balance to buy this truck
+</div>
+<div th:each="truck : ${trucks}">
+    <div class="card" style="width: 25rem;">
+        <!--    <img class="card-img-top" src="" alt="Card image cap">-->
+        <div class="card-body">
+            <input hidden="hidden" readonly type="number" id="newTruckId" th:value="${truck.id}"/>
+            <h5 class="card-title" th:text="${truck.model}"></h5>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td>Maximum load</td>
+                        <td th:text="${truck.maxLoad}"></td>
+                    </tr>
+                    <tr>
+                        <td>Fuel consumption</td>
+                        <td th:text="${truck.fuelConsumption}"></td>
+                    </tr>
+                    <tr>
+                        <td>Price</td>
+                        <td th:text="${truck.price}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </li>
+        </ul>
+        <div class="card-body">
+            <div class="buyDiv">
+                <button type="button" class="btn btn-secondary buyButton" th:id="${truck.id}">Buy truck</button>
+            </div>
+
+        </div>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#notEnoughBalance').hide();
+        $('#success').hide();
+
+        $('.card-body .buyButton').on('click', function (event) {
+            $('#success').hide();
+            var truckId = $(this).attr('id');
+            var checkBalanceLink = "check-balance/" + truckId;
+            var buyTruckLink = "buy-truck";
+
+            $.get(checkBalanceLink, function (response) {
+                if (response == true) {
+                    $.ajax({
+                        type: "POST",
+                        url: buyTruckLink,
+                        data: {truckId: truckId},
+                        success: function (result) {
+                            $('#success').show();
+                            //$(window).attr('location','/trucks')
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert("An error occurred during buying a truck");
+                        }
+                    });
+                } else {
+                    $('#notEnoughBalance').show();
+                }
+            });
+        });
+    });
+</script>
+
 </body>
 </html>
 
@@ -137,26 +178,26 @@
         padding-left: 150px;
     }
 
-    .shipmentHead {
-        text-align: center;
-        background-color: #cdcdcd;
+    .card {
+        margin: 0 auto;
+        float: none;
+        margin-bottom: 10px;
+        margin-top: 2rem;
     }
 
-    .shipmentContent {
-        text-align: center;
+    .list-group-item {
+        padding: inherit;
     }
 
-    .shipmentReadonly {
-        border: none;
-        background-color: inherit;
-        text-align: center;
+    .table {
+        margin-bottom: inherit;
     }
 
-    #detailsButton {
+    .btn-primary {
         background-color: #ff995c;
     }
 
-    #detailsButton:hover {
+    .btn-primary:hover {
         background-color: #f48024;
     }
 

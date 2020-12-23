@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Set;
+
 @Repository
 public interface TruckRepository extends JpaRepository<Truck, Long> {
 
@@ -18,4 +21,6 @@ public interface TruckRepository extends JpaRepository<Truck, Long> {
     @Query("update Truck truck set truck.status = :status where truck.id = :id")
     void updateTruckStatus(@Param("status") String status, @Param("id") Long id);
 
+    @EntityGraph(attributePaths = {"details", "details.currentLocation"})
+    Set<Truck> findByCompany_Id(Long id);
 }

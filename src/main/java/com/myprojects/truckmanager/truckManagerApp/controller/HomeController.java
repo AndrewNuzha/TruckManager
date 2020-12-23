@@ -1,9 +1,7 @@
 package com.myprojects.truckmanager.truckManagerApp.controller;
 
-import com.myprojects.truckmanager.truckManagerApp.exception_handler.NoSuchTruckException;
 import com.myprojects.truckmanager.truckManagerApp.model.Company;
-import com.myprojects.truckmanager.truckManagerApp.model.Truck;
-import com.myprojects.truckmanager.truckManagerApp.model.TruckDetails;
+import com.myprojects.truckmanager.truckManagerApp.model.NewTruck;
 import com.myprojects.truckmanager.truckManagerApp.model.User;
 import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
 import com.myprojects.truckmanager.truckManagerApp.service.UserService;
@@ -39,28 +37,18 @@ public class HomeController {
         return "homepage";
     }
 
-    @GetMapping("/trucks")
-    public String showTrucksForm(Model model) {
-        User user = userService.findUserWithCompanyByNickName(getAuthenticationName());
-        Company company = user.getCompany();
-
-        model.addAttribute("username", user.getNickName());
-        model.addAttribute("balance", company.getBalance());
-        model.addAttribute("trucks", company.getTrucks());
-        return "trucks";
-    }
-
-    @GetMapping("/truck-details/{id}")
+    @GetMapping("/check-balance/{id}")
     @ResponseBody
-    public TruckDetails showTruckDetailsForm(@PathVariable("id") Long id) {
-        Truck truck = truckService.findTruckWithDetailsById(id);
-        if (truck == null) {
-            throw new NoSuchTruckException("There is no truck with ID=" + id);
+    public boolean checkTruckStatus(@PathVariable("id") Integer id) {
+        Float balance = userService.findUserWithCompanyIdByNickName(getAuthenticationName()).getCompany().getBalance();
+        NewTruck newTruck = truckService.getAllNewTrucks().get(id - 1);
+        if (newTruck == null) {
+            return false;
         } else {
-            TruckDetails details = truck.getDetails();
-            return truck.getDetails();
+            return balance > newTruck.getPrice();
         }
     }
+
 
     private String getAuthenticationName() {
         return authenticationFacade.getAuthentication().getName();

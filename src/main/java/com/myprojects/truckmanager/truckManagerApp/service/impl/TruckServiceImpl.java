@@ -1,55 +1,81 @@
 package com.myprojects.truckmanager.truckManagerApp.service.impl;
 
+import com.myprojects.truckmanager.truckManagerApp.dto.TruckDetailsDTO;
 import com.myprojects.truckmanager.truckManagerApp.model.*;
 import com.myprojects.truckmanager.truckManagerApp.repository.TruckDetailsRepository;
 import com.myprojects.truckmanager.truckManagerApp.repository.TruckRepository;
 import com.myprojects.truckmanager.truckManagerApp.service.LocationService;
 import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TruckServiceImpl implements TruckService {
 
     @Autowired
-    TruckRepository truckRepository;
+    private TruckRepository truckRepository;
     @Autowired
-    TruckDetailsRepository truckDetailsRepository;
+    private TruckDetailsRepository truckDetailsRepository;
     @Autowired
-    LocationService locationService;
+    private LocationService locationService;
+    private List<NewTruck> newTruckList;
+    private final float MILEAGE_BEFORE_SERVICE = 25000f;
 
-    /**
-     * Creates new starter truck with details for a new company
-     *
-     * @return created truck
-     */
-    //TODO add ready truck models
     @Override
-    public Truck createStarterTruck() {
+    public Truck createTruck(NewTruck newTruck) {
         List<Location> allLocations = locationService.getAllLocations();
         Location starterLocation = allLocations.stream().filter(loc -> loc.getCity().equals("Saint-Petersburg"))
                 .findAny().orElse(allLocations.get(0));
 
         Truck truck = new Truck();
-        truck.setModel("Scania RX100");
+        truck.setModel(newTruck.getModel());
         truck.setCategory(TruckCategory.VAN.getCategory);
-        truck.setMaxLoad(10);
+        truck.setMaxLoad(newTruck.getMaxLoad());
         truck.setStatus(TruckStatus.AVAILABLE.getStatus);
 
         TruckDetails truckDetails = new TruckDetails();
         truckDetails.setMileage(0F);
-        truckDetails.setMileageBeforeService(25000F);
-        truckDetails.setFuelConsumption(0.5F);
+        truckDetails.setMileageBeforeService(MILEAGE_BEFORE_SERVICE);
+        truckDetails.setFuelConsumption(newTruck.getFuelConsumption());
         truckDetails.setCurrentLocation(starterLocation);
         truckDetails.setProductionYear(new Timestamp(new Date().getTime()));
 
+        truckDetailsRepository.save(truckDetails);
         truck.setDetails(truckDetails);
         return truck;
+    }
+
+    @Override
+    public List<NewTruck> getAllNewTrucks() {
+        return newTruckList;
+    }
+
+    @Override
+    public TruckDetailsDTO prepareTruckDetails(Truck truck) {
+        TruckDetailsDTO truckDetailsDTO = new TruckDetailsDTO();
+        truckDetailsDTO.setTruckId(truck.getId());
+        truckDetailsDTO.setFuelConsumption(truck.getDetails().getFuelConsumption());
+        truckDetailsDTO.setMileage(truck.getDetails().getMileage());
+        truckDetailsDTO.setMileageBeforeService(truck.getDetails().getMileageBeforeService());
+        truckDetailsDTO.setCurrentLocationText(truck.getDetails().getCurrentLocation().getCountry() + ", "
+                + truck.getDetails().getCurrentLocation().getCity());
+        return truckDetailsDTO;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean doesCompanyContainTruck(Truck truck, Long companyId) {
+        Set<Truck> companyTrucks = truckRepository.findByCompany_Id(companyId);
+        return (companyTrucks.contains(truck));
     }
 
     @Override
@@ -85,7 +111,41 @@ public class TruckServiceImpl implements TruckService {
 
     @Override
     @Transactional
+    public void sellTruck(Truck truck) {
+        Company company = truck.getCompany();
+        company.setBalance(company.getBalance() + 20000F);
+        truckRepository.deleteById(truck.getId());
+    }
+
+    @Override
+    @Transactional
+    public boolean serviceTruck(Truck truck) {
+        Company company = truck.getCompany();
+        if (company.getBalance() < calculateServicePrice(truck)) {
+            return false;
+        } else {
+            company.setBalance(company.getBalance() - calculateServicePrice(truck));
+            truck.getDetails().setMileageBeforeService(MILEAGE_BEFORE_SERVICE);
+            return true;
+        }
+    }
+
+    @Override
+    @Transactional
     public void saveTruck(Truck truck) {
         truckRepository.save(truck);
+    }
+
+    private Float calculateServicePrice(Truck truck) {
+        float passedDistance = MILEAGE_BEFORE_SERVICE - truck.getDetails().getMileageBeforeService();
+        float price = passedDistance * 0.0065f;
+        return Precision.round(price, 2);
+    }
+
+    @PostConstruct
+    private void postConstruct() {
+        newTruckList = new ArrayList<>();
+        newTruckList.add(new NewTruck(1, "Scania RX100", 10, 0.52f, 15000));
+        newTruckList.add(new NewTruck(2, "MAN 818", 20, 0.48f, 20000));
     }
 }

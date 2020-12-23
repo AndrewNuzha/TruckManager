@@ -126,7 +126,9 @@ public class ShipmentServiceImpl implements ShipmentService {
         return shipmentRepository.save(shipment);
     }
 
-    private void completeShipment(Shipment shipment) {
+    @Override
+    @Transactional
+    public void completeShipment(Shipment shipment) {
         truckService.updateTruckStatus(TruckStatus.AVAILABLE.getStatus, shipment.getTruck().getId());
         truckService.updateTruckMileage(shipment.getTruck(), shipment.getDistance());
         truckService.updateTruckLocation(shipment.getArrivalLocation(), shipment.getTruck().getId());
@@ -136,10 +138,16 @@ public class ShipmentServiceImpl implements ShipmentService {
         deleteShipment(shipment.getId());
     }
 
+    //TODO implement this method
+    private Float calculateShipmentExpenses(Truck truck) {
+        Float fuelConsumption = truck.getDetails().getFuelConsumption();
+        return 0f;
+    }
+
     private Float calculateShipmentIncome(float distance, String category, Integer maxLoad) {
         if (category.equals(TruckCategory.VAN.getCategory)) {
             return Precision.round(0.06F * distance * maxLoad, 2);
-        } else if (category.equals(TruckCategory.CONTAINER.getCategory)){
+        } else if (category.equals(TruckCategory.CONTAINER.getCategory)) {
             return Precision.round(0.075F * distance * maxLoad, 2);
         } else {
             return 0F;

@@ -15,6 +15,8 @@ public interface ShipmentService {
 
     Shipment save(Shipment shipment);
 
+    void completeShipment(Shipment shipment);
+
     List<Shipment> findShipmentsByCompanyId(Long id);
 
     List<ShipmentInfoDTO> prepareShipmentsData(List<Shipment> shipments);

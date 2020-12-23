@@ -3,6 +3,7 @@ package com.myprojects.truckmanager.truckManagerApp.service.impl;
 import com.myprojects.truckmanager.truckManagerApp.dto.UserRegistrationDTO;
 import com.myprojects.truckmanager.truckManagerApp.model.Company;
 import com.myprojects.truckmanager.truckManagerApp.model.Role;
+import com.myprojects.truckmanager.truckManagerApp.model.Truck;
 import com.myprojects.truckmanager.truckManagerApp.model.User;
 import com.myprojects.truckmanager.truckManagerApp.repository.UserRepository;
 import com.myprojects.truckmanager.truckManagerApp.service.CompanyService;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -52,7 +54,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User findUserWithCompanyByNickName(String nickName) {
-        return userRepository.findWithCompanyAndTrucksByNickName(nickName);
+        return userRepository.findWithCompanyAndTrucksInfoByNickName(nickName);
     }
 
     @Override

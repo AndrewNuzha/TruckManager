@@ -1,6 +1,7 @@
 package com.myprojects.truckmanager.truckManagerApp.service.impl;
 
 import com.myprojects.truckmanager.truckManagerApp.model.Company;
+import com.myprojects.truckmanager.truckManagerApp.model.NewTruck;
 import com.myprojects.truckmanager.truckManagerApp.model.Truck;
 import com.myprojects.truckmanager.truckManagerApp.repository.CompanyRepository;
 import com.myprojects.truckmanager.truckManagerApp.service.CompanyService;
@@ -27,14 +28,25 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public Company createNewCompany(String name) {
 
+        NewTruck newTruckModel = truckService.getAllNewTrucks().get(0);
         Company newCompany = new Company(name, 20000F);
-        Truck newTruck = truckService.createStarterTruck();
-        newTruck.setCompany(newCompany);
-        truckService.saveTruck(newTruck);
-        Truck secondTruck = truckService.createStarterTruck(); //testing only
-        secondTruck.setCompany(newCompany);
-        truckService.saveTruck(secondTruck);
+        Truck firstStarterTruck = truckService.createTruck(newTruckModel);
+        firstStarterTruck.setCompany(newCompany);
+        truckService.saveTruck(firstStarterTruck);
+        Truck secondStarterTruck = truckService.createTruck(newTruckModel);
+        secondStarterTruck.setCompany(newCompany);
+        truckService.saveTruck(secondStarterTruck);
         return newCompany;
+    }
+
+    @Transactional
+    @Override
+    public void addNewTruckToCompany(Integer newTruckId, Company company) {
+        NewTruck newTruckModel = truckService.getAllNewTrucks().get(newTruckId - 1);
+        Truck newTruck = truckService.createTruck(newTruckModel);
+        company.setBalance(company.getBalance() - newTruckModel.getPrice());
+        newTruck.setCompany(company);
+        truckService.saveTruck(newTruck);
     }
 
     @Override

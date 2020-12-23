@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Objects;
 
 @Getter
@@ -28,12 +27,29 @@ public class Truck {
     @Column(name = "status")
     private String status;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "truck_details_id")
     private TruckDetails details;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Truck truck = (Truck) o;
+        return id.equals(truck.id) &&
+                model.equals(truck.model) &&
+                category.equals(truck.category) &&
+                maxLoad.equals(truck.maxLoad) &&
+                status.equals(truck.status) &&
+                company.equals(truck.company);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, model, category, maxLoad, status, company);
+    }
 }

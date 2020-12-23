@@ -21,8 +21,6 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 
-<!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">-->
-
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #f48024;">
 
     <div class="navbar-brand" id="logoBox">
@@ -51,9 +49,11 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/shipments">Shipments</a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/truckstore">Truck store</a>
+            </li>
             <li class="nav-item active" id="balanceItem">
                 <span class="nav-link" th:text="${balance}">Balance</span>
-                <!--                After replace it with link to balance module-->
             </li>
 
         </ul>
@@ -97,11 +97,6 @@
                 <td class="truckContent" th:text="${shipment.income}"></td>
                 <td class="truckContent"><span th:id="${'shipment' + shipment.id}"></span></td>
                 <td class="truckContent">
-<!--                    <div class="progress active">-->
-<!--                        <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" th:id="${'progressB' + shipment.id}"-->
-<!--                             aria-valuemin="0" aria-valuemax="100" th:attr="aria-valuenow=${shipment.estimatedDistance}"-->
-<!--                             th:style="'width:'+ ${shipment.estimatedDistance}+'%;'"></div>-->
-<!--                    </div>-->
                     <div class="progress active">
                         <div class="progress-bar progress-bar-striped bg-warning" role="progressbar"
                              th:id="${'progressB' + shipment.id}"
@@ -143,12 +138,10 @@
 
             var now = new Date().getTime();
             var distance = finish_date - now;
-            //var days = Math.floor(distance / (1000 * 60 * 60 * 24));
             var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // timer.innerHTML = days + "<span style='font-weight:normal'>d</span> " + hours + "h " + minutes + "m " + seconds + "s ";
             timer.innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
 
             if (distance < 0) {

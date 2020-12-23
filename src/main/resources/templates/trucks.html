@@ -12,9 +12,6 @@
 <body>
 
 <script src="webjars/jquery/3.2.1/jquery.min.js"></script>
-<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"-->
-<!--        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"-->
-<!--        crossorigin="anonymous"></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
@@ -78,7 +75,7 @@
 <div th:switch="${trucks}">
     <h2 th:case="null">You have no trucks in garage</h2>
     <div th:case="*">
-        <table class="table table-hover tTable">
+        <table class="table table-hover trucksTable">
             <thead>
             <tr class="headT">
                 <th class="truckHead" scope="col">Model</th>
@@ -96,7 +93,7 @@
                 <td class="truckContent" th:text="${truck.status}"></td>
                 <td class="truckContent">
                     <span>
-                        <a th:href="@{truck-details/{id}(id=${truck.id})}" class="btn btn-primary btn-sm dBtn">Details</a>
+                        <a th:href="@{truck-details/{id}(id=${truck.id})}" class="btn btn-primary btn-sm detailsButton">Details</a>
                     </span>
                     <span th:switch="${truck.status}">
                         <span th:case="'Available'">
@@ -112,7 +109,7 @@
     </div>
 </div>
 
-<div class="myModal">
+<div class="detailsModal">
     <div class="modal fade" id="truckDetails" tabindex="-1" role="dialog" aria-labelledby="truckDetails" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -122,8 +119,11 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body dModal">
                     <form>
+                        <input class="form-control" hidden="hidden" type="text"
+                               id="truckId"
+                               readonly>
                         <div class="form-group row">
                             <label for="fuelConsumption" class="col-sm-6 col-form-label">Fuel consumption</label>
                             <div class="col-sm-6">
@@ -157,9 +157,16 @@
                             </div>
                         </div>
                     </form>
+                    <div class="alert alert-danger" role="alert" id="incorrectStatus">
+                        This truck is on the way now, you can't sell or service it
+                    </div>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" class="btn btn-secondary sellButton">Sell</button>
+                        <button type="button" class="btn btn-secondary serviceButton">Service</button>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="closeModalButton">Close</button>
                 </div>
             </div>
         </div>
@@ -169,20 +176,78 @@
 
 <script>
     $(document).ready(function (){
-        $('.tTable .dBtn').on('click', function (event){
+        $('#incorrectStatus').hide();
+
+        $('.trucksTable .detailsButton').on('click', function (event) {
+            $('#incorrectStatus').hide();
             event.preventDefault();
             var href = $(this).attr('href');
 
             $.get(href,function (detail){
-                var locationText = detail.currentLocation.country + ", " + detail.currentLocation.city;
-                $('.myModal #fuelConsumption').val(detail.fuelConsumption);
-                $('.myModal #mileage').val(detail.mileage);
-                $('.myModal #currentLocation').val(locationText);
-                $('.myModal #mileageBeforeService').val(detail.mileageBeforeService);
+                $('.detailsModal #truckId').val(detail.truckId);
+                $('.detailsModal #fuelConsumption').val(detail.fuelConsumption);
+                $('.detailsModal #mileage').val(detail.mileage);
+                $('.detailsModal #currentLocation').val(detail.currentLocationText);
+                $('.detailsModal #mileageBeforeService').val(detail.mileageBeforeService);
             });
 
-            $('.myModal #truckDetails').modal();
+            $('.detailsModal #truckDetails').modal();
         });
+
+        $('.detailsModal .sellButton').on('click', function (event) {
+            var truckId = $('.detailsModal #truckId').val();
+            var checkTruckStatusLink = "check-truck-status/" + truckId;
+            var sellTruckLink = "sell-truck";
+
+            $.get(checkTruckStatusLink,function (response){
+                if (response == true) {
+                    $.ajax({
+                        type:"POST",
+                        url: sellTruckLink,
+                        data: {truckId: truckId},
+                        success: function(result){
+                            $(window).attr('location','/trucks')
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            alert("An error occurred during truck sell");
+                        }
+                    });
+                } else {
+                    $('#incorrectStatus').show();
+                }
+            });
+        });
+
+        $('.detailsModal .serviceButton').on('click', function (event) {
+            var truckId = $('.detailsModal #truckId').val();
+            var checkTruckStatusLink = "check-truck-status/" + truckId;
+            var serviceTruckLink = "service-truck";
+
+            $.get(checkTruckStatusLink,function (response){
+                if (response == true) {
+
+                    $.ajax({
+                        type:"POST",
+                        url: serviceTruckLink,
+                        data: {truckId: truckId},
+                        success: function(result){
+                            if (result == true) {
+                                $(window).attr('location','/trucks')
+                            } else {
+                                alert("Not enough balance to service");
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            alert("An error occurred during truck service");
+                        }
+                    });
+
+                } else {
+                    $('#incorrectStatus').show();
+                }
+            });
+        });
+
     });
 </script>
 
