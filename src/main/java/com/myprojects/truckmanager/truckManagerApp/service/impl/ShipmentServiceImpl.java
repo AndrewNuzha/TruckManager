@@ -4,10 +4,7 @@ import com.myprojects.truckmanager.truckManagerApp.dto.NewShipmentDTO;
 import com.myprojects.truckmanager.truckManagerApp.dto.ShipmentInfoDTO;
 import com.myprojects.truckmanager.truckManagerApp.model.*;
 import com.myprojects.truckmanager.truckManagerApp.repository.ShipmentRepository;
-import com.myprojects.truckmanager.truckManagerApp.service.CompanyService;
-import com.myprojects.truckmanager.truckManagerApp.service.LocationService;
-import com.myprojects.truckmanager.truckManagerApp.service.ShipmentService;
-import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
+import com.myprojects.truckmanager.truckManagerApp.service.*;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +25,8 @@ public class ShipmentServiceImpl implements ShipmentService {
     private TruckService truckService;
     @Autowired
     private CompanyService companyService;
+    @Autowired
+    private LogService logService;
     @Autowired
     private ShipmentRepository shipmentRepository;
 
@@ -121,7 +120,7 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     @Override
     @Transactional
-    public Shipment save(Shipment shipment) {
+    public Shipment saveShipment(Shipment shipment) {
         truckService.updateTruckStatus(TruckStatus.TRIP.getStatus, shipment.getTruck().getId());
         return shipmentRepository.save(shipment);
     }
@@ -133,22 +132,21 @@ public class ShipmentServiceImpl implements ShipmentService {
         truckService.updateTruckMileage(shipment.getTruck(), shipment.getDistance());
         truckService.updateTruckLocation(shipment.getArrivalLocation(), shipment.getTruck().getId());
         Company company = shipment.getCompany();
-        company.setBalance(company.getBalance() + shipment.getIncome());
-
+        company.setBalance(company.getBalance() + shipment.getIncome() - calculateShipmentExpenses(shipment));
+        logService.writeShipmentCompletedLog(shipment);
         deleteShipment(shipment.getId());
     }
 
-    //TODO implement this method
-    private Float calculateShipmentExpenses(Truck truck) {
-        Float fuelConsumption = truck.getDetails().getFuelConsumption();
-        return 0f;
+    private Float calculateShipmentExpenses(Shipment shipment) {
+        float consumedFuel = shipment.getTruck().getDetails().getFuelConsumption() * shipment.getDistance();
+        return Precision.round(consumedFuel * 0.52f, 2);
     }
 
     private Float calculateShipmentIncome(float distance, String category, Integer maxLoad) {
         if (category.equals(TruckCategory.VAN.getCategory)) {
-            return Precision.round(0.06F * distance * maxLoad, 2);
+            return Precision.round(0.085F * distance * maxLoad, 2);
         } else if (category.equals(TruckCategory.CONTAINER.getCategory)) {
-            return Precision.round(0.075F * distance * maxLoad, 2);
+            return Precision.round(0.1F * distance * maxLoad, 2);
         } else {
             return 0F;
         }

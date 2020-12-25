@@ -39,7 +39,7 @@
                     <a class="dropdown-item" href="#">Action</a>
                     <a class="dropdown-item" href="#">Another action</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
+                    <a class="dropdown-item" href="/logs/?page=1">Company logs</a>
                 </div>
             </li>
 
@@ -80,11 +80,11 @@
         <table id="shipmentsTable" class="table table-hover">
             <thead>
             <tr class="headT">
-                <th class="truckHead" scope="col">Departure city</th>
-                <th class="truckHead" scope="col">Arrival city</th>
-                <th class="truckHead" scope="col">Income</th>
-                <th class="truckHead" scope="col">Remaining time</th>
-                <th class="truckHead" scope="col">Distance progress</th>
+                <th class="shipmentHead" scope="col">Departure city</th>
+                <th class="shipmentHead" scope="col">Arrival city</th>
+                <th class="shipmentHead" scope="col">Income</th>
+                <th class="shipmentHead" scope="col">Remaining time</th>
+                <th class="shipmentHead" scope="col">Distance progress</th>
             </tr>
             </thead>
             <tbody>
@@ -92,11 +92,11 @@
                 <input hidden="hidden" readonly th:id="${'shipmentDepT' + shipment.id}" th:name="truckId" th:value="${shipment.departureTime}"/>
                 <input hidden="hidden" readonly th:id="${'shipmentArrT' + shipment.id}" th:name="truckId" th:value="${shipment.arrivalTime}"/>
 
-                <td class="truckContent" th:text="${shipment.departureCity}"></td>
-                <td class="truckContent" th:text="${shipment.arrivalCity}"></td>
-                <td class="truckContent" th:text="${shipment.income}"></td>
-                <td class="truckContent"><span th:id="${'shipment' + shipment.id}"></span></td>
-                <td class="truckContent">
+                <td class="shipmentContent" th:text="${shipment.departureCity}"></td>
+                <td class="shipmentContent" th:text="${shipment.arrivalCity}"></td>
+                <td class="shipmentContent" th:text="${shipment.income}"></td>
+                <td class="shipmentContent"><span th:id="${'shipment' + shipment.id}"></span></td>
+                <td class="shipmentContent">
                     <div class="progress active">
                         <div class="progress-bar progress-bar-striped bg-warning" role="progressbar"
                              th:id="${'progressB' + shipment.id}"
@@ -204,12 +204,12 @@
         padding-left: 150px;
     }
 
-    .truckHead {
+    .shipmentHead {
         text-align: center;
         background-color: #cdcdcd;
     }
 
-    .truckContent {
+    .shipmentContent {
         text-align: center;
     }
 

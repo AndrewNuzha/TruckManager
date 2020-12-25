@@ -27,4 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = {"company"})
     User findWithCompanyByNickName(String nickName);
 
+    @EntityGraph(attributePaths = {"company", "logs"})
+    User findWithCompanyAndLogsByNickName(String nickName);
+
 }

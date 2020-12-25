@@ -113,7 +113,7 @@ public class TruckServiceImpl implements TruckService {
     @Transactional
     public void sellTruck(Truck truck) {
         Company company = truck.getCompany();
-        company.setBalance(company.getBalance() + 20000F);
+        company.setBalance(company.getBalance() + 20000F);//TODO do something here with price
         truckRepository.deleteById(truck.getId());
     }
 

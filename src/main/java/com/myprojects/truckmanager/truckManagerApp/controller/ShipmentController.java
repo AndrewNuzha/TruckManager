@@ -8,7 +8,6 @@ import com.myprojects.truckmanager.truckManagerApp.model.Company;
 import com.myprojects.truckmanager.truckManagerApp.model.Shipment;
 import com.myprojects.truckmanager.truckManagerApp.model.Truck;
 import com.myprojects.truckmanager.truckManagerApp.model.User;
-import com.myprojects.truckmanager.truckManagerApp.service.LocationService;
 import com.myprojects.truckmanager.truckManagerApp.service.ShipmentService;
 import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
 import com.myprojects.truckmanager.truckManagerApp.service.UserService;
@@ -68,7 +67,7 @@ public class ShipmentController {
             throw new ShipmentCreationException("An error occurred during shipment creation");
         }
         Shipment shipment = shipmentService.createNewShipment(newShipmentDTO);
-        shipmentService.save(shipment);
+        shipmentService.saveShipment(shipment);
         return "redirect:/homepage";
     }
 

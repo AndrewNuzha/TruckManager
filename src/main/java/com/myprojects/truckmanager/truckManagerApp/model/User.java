@@ -29,7 +29,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(
@@ -41,6 +41,10 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Log> logs;
 
     public User(String firstName, String lastName, String nickName, String email, String password, List<Role> roles) {
         this.firstName = firstName;

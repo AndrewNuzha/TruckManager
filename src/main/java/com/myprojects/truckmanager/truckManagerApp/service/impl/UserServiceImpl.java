@@ -64,6 +64,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserWithCompanyAndLogsByNickName(String nickName) {
+        return userRepository.findWithCompanyAndLogsByNickName(nickName);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public boolean isNickNameAlreadyExist(String nickName) {
         User userFromDb = userRepository.findWithRolesByNickName(nickName);

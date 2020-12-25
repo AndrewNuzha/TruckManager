@@ -36,7 +36,7 @@
                     <a class="dropdown-item" href="#">Action</a>
                     <a class="dropdown-item" href="#">Another action</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
+                    <a class="dropdown-item" href="/logs/?page=1">Company logs</a>
                 </div>
             </li>
 
@@ -132,7 +132,6 @@
                         data: {truckId: truckId},
                         success: function (result) {
                             $('#success').show();
-                            //$(window).attr('location','/trucks')
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             alert("An error occurred during buying a truck");
@@ -199,6 +198,10 @@
 
     .btn-primary:hover {
         background-color: #f48024;
+    }
+
+    .card-body {
+        background-color: bisque
     }
 
 </style>

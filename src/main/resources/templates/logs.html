@@ -7,22 +7,18 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
 
-    <title>Truck details</title>
+    <title>Homepage</title>
 </head>
 <body>
-
-<script src="webjars/jquery/3.2.1/jquery.min.js"></script>
-<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"-->
-<!--        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"-->
-<!--        crossorigin="anonymous"></script>-->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
         crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-
-<!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">-->
 
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #f48024;">
 
@@ -41,7 +37,7 @@
                     <a class="dropdown-item" href="#">Action</a>
                     <a class="dropdown-item" href="#">Another action</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
+                    <a class="dropdown-item" href="/logs">Company logs</a>
                 </div>
             </li>
 
@@ -51,15 +47,18 @@
             <li class="nav-item active">
                 <a class="nav-link" href="/shipments">Shipments</a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/truckstore">Truck store</a>
+            </li>
             <li class="nav-item active" id="balanceItem">
                 <span class="nav-link" th:text="${balance}">Balance</span>
-                <!--                After replace it with link to balance module-->
             </li>
 
         </ul>
         <ul class="nav navbar-nav navbar-right" id="rightDropdown">
             <li class="nav-item dropdown active">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span th:text="${username}">UserNickName</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -72,24 +71,27 @@
         </ul>
     </div>
 </nav>
-<form>
-    <div class="form-group row">
-        <label for="mileageBeforeService" class="col-sm-2 col-form-label">Mileage before service</label>
-        <div class="col-sm-10">
-            <input class="form-control" type="text" placeholder="Mileage before service"
-                   id="mileageBeforeService"
-                   readonly th:value="${details.mileageBeforeService}">
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="currentLocation" class="col-sm-2 col-form-label">Current location</label>
-        <div class="col-sm-10">
-            <input class="form-control" type="text" placeholder="Current location"
-                   id="currentLocation"
-                   readonly th:value="${details.currentLocation.country + ' , ' + details.currentLocation.city}">
-        </div>
-    </div>
-</form>
+
+<table id="logsTable" class="table table-hover">
+    <thead>
+    <tr class="headT">
+        <th class="col-xs-5 logHead" scope="col">Date and time</th>
+        <th class="col-xs-7 logHead" scope="col">Log content</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="log : ${data}">
+        <td class="logContent" th:text="${log.logTime}"></td>
+        <td class="logContent" th:text="${log.logText}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<ul class="nav nav-pills" th:if="${showPages}">
+    <li class="nav-item" th:each="i : ${#numbers.sequence(1,data.totalPages)}">
+        <a th:href="@{/logs/(page=${i})}" th:text="${i}" class="nav-link" th:classappend="${currentPage}==${i}?'active':''"></a>
+    </li>
+</ul>
 
 </body>
 </html>
@@ -122,12 +124,13 @@
         padding-left: 150px;
     }
 
-    .form-control {
-        width: 30%;
+    .logHead {
+        text-align: center;
+        background-color: #cdcdcd;
     }
 
-    .form-group {
-        padding-left: 5%;
+    .logContent {
+        text-align: center;
     }
 
 </style>

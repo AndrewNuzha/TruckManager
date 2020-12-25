@@ -12,6 +12,8 @@ public interface UserService extends UserDetailsService {
 
     User findUserWithCompanyIdByNickName(String nickName);
 
+    User findUserWithCompanyAndLogsByNickName(String nickName);
+
     boolean isNickNameAlreadyExist(String nickName);
 
 }

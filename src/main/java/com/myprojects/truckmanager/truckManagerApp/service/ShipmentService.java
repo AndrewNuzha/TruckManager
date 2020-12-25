@@ -13,7 +13,7 @@ public interface ShipmentService {
 
     Shipment createNewShipment(NewShipmentDTO newShipmentDTO);
 
-    Shipment save(Shipment shipment);
+    Shipment saveShipment(Shipment shipment);
 
     void completeShipment(Shipment shipment);
 
