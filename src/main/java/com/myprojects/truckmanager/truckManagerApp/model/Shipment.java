@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -39,4 +40,23 @@ public class Shipment {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Shipment shipment = (Shipment) o;
+        return id.equals(shipment.id) &&
+                distance.equals(shipment.distance) &&
+                income.equals(shipment.income) &&
+                category.equals(shipment.category) &&
+                departureTime.equals(shipment.departureTime) &&
+                departureLocation.equals(shipment.departureLocation) &&
+                arrivalLocation.equals(shipment.arrivalLocation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, distance, income, category, departureTime, departureLocation, arrivalLocation);
+    }
 }

@@ -30,4 +30,12 @@ public class TruckDetails {
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "current_location_id")
     private Location currentLocation;
+
+    public TruckDetails(Float mileage, Float mileageBeforeService, Float fuelConsumption, Timestamp productionYear, Location currentLocation) {
+        this.mileage = mileage;
+        this.mileageBeforeService = mileageBeforeService;
+        this.fuelConsumption = fuelConsumption;
+        this.productionYear = productionYear;
+        this.currentLocation = currentLocation;
+    }
 }

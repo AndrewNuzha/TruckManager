@@ -88,7 +88,7 @@
 </table>
 
 <ul class="nav nav-pills" th:if="${showPages}">
-    <li class="nav-item" th:each="i : ${#numbers.sequence(1,data.totalPages)}">
+    <li class="nav-item" th:each="i : ${#numbers.sequence(1,totalPages)}">
         <a th:href="@{/logs/(page=${i})}" th:text="${i}" class="nav-link" th:classappend="${currentPage}==${i}?'active':''"></a>
     </li>
 </ul>

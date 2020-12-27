@@ -23,6 +23,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * Handles shipment requests.
+ *
+ * @author Andrew Nuzha
+ * @version 1.0
+ */
 @Controller
 public class ShipmentController {
 
@@ -41,6 +47,13 @@ public class ShipmentController {
         webDataBinder.registerCustomEditor(String.class, stringEditor);
     }
 
+    /**
+     * Shows form for shipment creation for selected truck with id {@code id}.
+     *
+     * @param id    identifier of truck
+     * @param model container with info for form
+     * @return form for shipment creation
+     */
     @GetMapping("/create-shipment/{id}")
     public String showCreateShipmentForm(@PathVariable("id") Long id, Model model) {
         User user = userService.findUserWithCompanyIdByNickName(getAuthenticationName());
@@ -60,6 +73,15 @@ public class ShipmentController {
         }
     }
 
+    /**
+     * Initializes the shipment creation process.
+     * On this stage we have all the parameters of the shipment, we have to create.
+     *
+     * @param newShipmentDTO object with ahipment parameters
+     * @param result         result of checking shipment parameters
+     * @return redirection to homepage
+     * @throws ShipmentCreationException if there are errors in {@code newShipmentDTO} object.
+     */
     @PostMapping("/create-shipment")
     public String createNewShipment(@Valid @ModelAttribute("shipment") NewShipmentDTO newShipmentDTO,
                                     BindingResult result) {
@@ -71,6 +93,13 @@ public class ShipmentController {
         return "redirect:/homepage";
     }
 
+    /**
+     * Returns a form with company shipments list.
+     * To update the status and complete shipments, user must open this form
+     *
+     * @param model container with info for form
+     * @return form with company shipments list
+     */
     @GetMapping("/shipments")
     public String showShipmentsForm(Model model) {
         User user = userService.findUserWithCompanyIdByNickName(getAuthenticationName());
@@ -85,6 +114,11 @@ public class ShipmentController {
         return "shipments";
     }
 
+    /**
+     * Returns the nickname of user, who is currently authenticated
+     *
+     * @return nickname of authenticated user
+     */
     private String getAuthenticationName() {
         return authenticationFacade.getAuthentication().getName();
     }

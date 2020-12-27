@@ -26,4 +26,10 @@ public class Location {
     @Column(name = "longitude")
     private Double longitude;
 
+    public Location(String country, String city, Double latitude, Double longitude) {
+        this.country = country;
+        this.city = city;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }
