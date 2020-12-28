@@ -1,6 +1,7 @@
 package com.myprojects.truckmanager.truckManagerApp.controller;
 
 import com.myprojects.truckmanager.truckManagerApp.model.Company;
+import com.myprojects.truckmanager.truckManagerApp.model.Log;
 import com.myprojects.truckmanager.truckManagerApp.model.NewTruck;
 import com.myprojects.truckmanager.truckManagerApp.model.User;
 import com.myprojects.truckmanager.truckManagerApp.service.LogService;
@@ -8,6 +9,7 @@ import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
 import com.myprojects.truckmanager.truckManagerApp.service.UserService;
 import com.myprojects.truckmanager.truckManagerApp.validation.IAuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +36,11 @@ public class HomeController {
     private LogService logService;
     private final int RECORD_ON_PAGE = 4;
 
+    /**
+     * Shows login form to enter login data.
+     *
+     * @return login form
+     */
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
@@ -84,11 +91,16 @@ public class HomeController {
         User user = userService.findUserWithCompanyIdByNickName(getAuthenticationName());
         long recordsCount = logService.getLogRecordsCount(user.getId());
         boolean showPages = recordsCount > RECORD_ON_PAGE;
+        long totalPages = recordsCount / RECORD_ON_PAGE;
+        if (recordsCount % RECORD_ON_PAGE > 0) {
+            totalPages++;
+        }
         model.addAttribute("username", user.getNickName());
         model.addAttribute("balance", user.getCompany().getBalance());
         model.addAttribute("data", logService.getLogsOnPageByUserId(user.getId(),
                 page - 1, RECORD_ON_PAGE)); //TODO implement time formatting and price round
         model.addAttribute("showPages", showPages);
+        model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
         return "logs";
     }

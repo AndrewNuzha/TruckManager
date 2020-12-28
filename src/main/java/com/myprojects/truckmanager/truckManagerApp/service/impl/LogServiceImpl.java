@@ -27,6 +27,8 @@ public class LogServiceImpl implements LogService {
     @Autowired
     private IAuthenticationFacade authenticationFacade;
 
+    @Override
+    @Transactional
     public void writeShipmentCompletedLog(Shipment shipment) {
         Log shipmentCompletedLog = new Log();
         String logText = String.format("Shipment from %s to %s completed. Income %f received",
@@ -35,7 +37,7 @@ public class LogServiceImpl implements LogService {
 
         shipmentCompletedLog.setLogText(logText);
         shipmentCompletedLog.setLogTime(new Timestamp(new Date().getTime()));
-        shipmentCompletedLog.setUser(getUserFromAuth());
+        shipmentCompletedLog.setUser(shipment.getCompany().getUser());
 
         logRepository.save(shipmentCompletedLog);
     }

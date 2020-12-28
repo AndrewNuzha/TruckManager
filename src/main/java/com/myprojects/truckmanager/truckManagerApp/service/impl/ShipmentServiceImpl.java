@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class ShipmentServiceImpl implements ShipmentService {
 
     @Autowired
-    private LocationService locationService;
+    private LocationAndTimeService locationAndTimeService;
     @Autowired
     private TruckService truckService;
     @Autowired
@@ -38,8 +38,8 @@ public class ShipmentServiceImpl implements ShipmentService {
         shipment.setDistance(newShipmentDTO.getDistance());
         shipment.setIncome(newShipmentDTO.getIncome());
         shipment.setDepartureTime(new Timestamp(new Date().getTime()));
-        shipment.setDepartureLocation(locationService.getLocationById(newShipmentDTO.getDepartureLocationId()));
-        shipment.setArrivalLocation(locationService.getLocationById(newShipmentDTO.getArrivalLocationId()));
+        shipment.setDepartureLocation(locationAndTimeService.getLocationById(newShipmentDTO.getDepartureLocationId()));
+        shipment.setArrivalLocation(locationAndTimeService.getLocationById(newShipmentDTO.getArrivalLocationId()));
         shipment.setTruck(truckService.findTruckWithDetailsById(newShipmentDTO.getTruckId()));
         shipment.setCompany(companyService.findCompanyById(newShipmentDTO.getCompanyId()));
 
@@ -49,12 +49,12 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public List<NewShipmentDTO> getAvailableShipmentOrders(Truck truck) {
         List<NewShipmentDTO> availableShipments = new ArrayList<>();
-        List<Location> allLocationsForTruck = locationService.getAllLocations().stream()
+        List<Location> allLocationsForTruck = locationAndTimeService.getAllLocations().stream()
                 .filter(loc -> !loc.getCity().equals(truck.getDetails()
                         .getCurrentLocation().getCity()))
                 .collect(Collectors.toList());
         for (Location location : allLocationsForTruck) {
-            float distance = (locationService.calculateDistance(truck.getDetails().getCurrentLocation(), location));
+            float distance = (locationAndTimeService.calculateDistance(truck.getDetails().getCurrentLocation(), location));
             if (distance < truck.getDetails().getMileageBeforeService()) {
                 NewShipmentDTO shipmentDTO = new NewShipmentDTO();
                 shipmentDTO.setTruckId(truck.getId());
@@ -89,8 +89,8 @@ public class ShipmentServiceImpl implements ShipmentService {
             shipmentInfo.setDepartureCity(shipment.getDepartureLocation().getCity());
             shipmentInfo.setArrivalCity(shipment.getArrivalLocation().getCity());
             shipmentInfo.setIncome(shipment.getIncome());
-            shipmentInfo.setDepartureTime(locationService.convertTimestampToLocalDateTime(shipment.getDepartureTime()));
-            shipmentInfo.setArrivalTime(locationService.calculateShipmentArrivalTime(shipment.getDistance(),
+            shipmentInfo.setDepartureTime(locationAndTimeService.convertTimestampToLocalDateTime(shipment.getDepartureTime()));
+            shipmentInfo.setArrivalTime(locationAndTimeService.calculateShipmentArrivalTime(shipment.getDistance(),
                     shipment.getDepartureTime()));
             shipmentsInfoList.add(shipmentInfo);
             counter++;
@@ -103,7 +103,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         List<Shipment> actualShipments = new ArrayList<>();
         for (int i = 0; i < shipments.size(); i++) {
             Shipment shipment = shipments.get(i);
-            if (locationService.isShipmentCompleted(shipment.getDistance(), shipment.getDepartureTime())) {
+            if (locationAndTimeService.isShipmentCompleted(shipment.getDistance(), shipment.getDepartureTime())) {
                 completeShipment(shipment);
             } else {
                 actualShipments.add(shipment);
@@ -135,6 +135,7 @@ public class ShipmentServiceImpl implements ShipmentService {
         company.setBalance(company.getBalance() + shipment.getIncome() - calculateShipmentExpenses(shipment));
         logService.writeShipmentCompletedLog(shipment);
         deleteShipment(shipment.getId());
+        companyService.saveCompany(company);
     }
 
     private Float calculateShipmentExpenses(Shipment shipment) {

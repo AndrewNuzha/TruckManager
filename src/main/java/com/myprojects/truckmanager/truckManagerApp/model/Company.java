@@ -23,13 +23,14 @@ public class Company {
     @Column(name = "balance")
     private Float balance;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "company", fetch = FetchType.LAZY)
     private List<Truck> trucks;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "company", fetch = FetchType.LAZY)
     private List<Shipment> shipments;
+
+    @OneToOne(cascade = CascadeType.MERGE, mappedBy = "company", fetch = FetchType.EAGER)
+    private User user;
 
     public Company(String name, Float balance) {
         this.name = name;

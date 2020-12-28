@@ -28,16 +28,16 @@ public class Shipment {
     @Column(name = "departure_time")
     private Timestamp departureTime;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "departure_location_id")
     private Location departureLocation;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "arrival_location_id")
     private Location arrivalLocation;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "truck_id")
     private Truck truck;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
     private Company company;
 

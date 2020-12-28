@@ -38,7 +38,7 @@ public class User {
                     name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
 

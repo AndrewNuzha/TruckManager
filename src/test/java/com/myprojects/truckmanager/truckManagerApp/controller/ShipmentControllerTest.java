@@ -1,13 +1,17 @@
 package com.myprojects.truckmanager.truckManagerApp.controller;
 
+import com.myprojects.truckmanager.truckManagerApp.dto.NewShipmentDTO;
 import com.myprojects.truckmanager.truckManagerApp.dto.ShipmentInfoDTO;
+import com.myprojects.truckmanager.truckManagerApp.exception_handler.NoSuchTruckException;
 import com.myprojects.truckmanager.truckManagerApp.model.*;
 import com.myprojects.truckmanager.truckManagerApp.service.ShipmentService;
 import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
 import com.myprojects.truckmanager.truckManagerApp.service.UserService;
 import com.myprojects.truckmanager.truckManagerApp.validation.IAuthenticationFacade;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,15 +23,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WebMvcTest(ShipmentController.class)
 class ShipmentControllerTest {
@@ -43,6 +44,8 @@ class ShipmentControllerTest {
     @MockBean
     private IAuthenticationFacade authenticationFacadeMock;
 
+    private static Truck testTruck;
+    private static List<NewShipmentDTO> shipmentDTOList;
     private final Authentication authentication = mock(Authentication.class);
     private static User userWithCompany;
 
@@ -55,14 +58,79 @@ class ShipmentControllerTest {
         userWithCompany = new User();
         userWithCompany.setNickName("Nickname");
         userWithCompany.setCompany(company);
+
+        testTruck = new Truck();
+        Truck truck = new Truck();
+        truck.setModel("Scania RX100");
+        truck.setMaxLoad(10);
+        truck.setCategory(TruckCategory.VAN.getCategory);
+        truck.setStatus(TruckStatus.AVAILABLE.getStatus);
+
+        shipmentDTOList = new ArrayList<>();
     }
 
     @Test
-    void showCreateShipmentForm() {
+    @WithMockUser(username = "admin")
+    void showCreateShipmentFormTest() throws Exception {
+        Long truckId = 1L;
+        testTruck.setId(truckId);
+        NewShipmentDTO shipmentDTO = new NewShipmentDTO();
+        shipmentDTO.setCompanyId(userWithCompany.getCompany().getId());
+        shipmentDTO.setTruckId(testTruck.getId());
+        shipmentDTO.setArrivalLocationId(1L);
+        shipmentDTO.setArrivalLocationCity("Saint-Petersburg");
+        shipmentDTO.setDepartureLocationId(2L);
+        shipmentDTOList.add(shipmentDTO);
+
+        when(authenticationFacadeMock.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(userWithCompany.getNickName());
+        when(userServiceMock.findUserWithCompanyIdByNickName(authentication.getName()))
+                .thenReturn(userWithCompany);
+        when(truckServiceMock.findTruckWithDetailsById(truckId)).thenReturn(testTruck);
+        when(shipmentServiceMock.getAvailableShipmentOrders(testTruck)).thenReturn(shipmentDTOList);
+
+        mockMvc.perform(get("/create-shipment/{id}", truckId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("create-shipment"))
+                .andExpect(model().attribute("balance", is(userWithCompany.getCompany().getBalance())))
+                .andExpect(model().attribute("username", is(userWithCompany.getNickName())))
+                .andExpect(model().attribute("shipments", hasSize(1)))
+                .andExpect(model().attribute("shipments", hasItem(
+                        allOf(
+                                hasProperty("companyId", is(userWithCompany.getCompany().getId())),
+                                hasProperty("truckId", is(testTruck.getId())),
+                                hasProperty("departureLocationId",
+                                        is(shipmentDTO.getDepartureLocationId())),
+                                hasProperty("arrivalLocationId", is(shipmentDTO.getArrivalLocationId())),
+                                hasProperty("arrivalLocationCity",
+                                        is(shipmentDTO.getArrivalLocationCity()))
+                        )
+                )));
+
+        ArgumentCaptor<Truck> truckCaptor = ArgumentCaptor.forClass(Truck.class);
+        ArgumentCaptor<Long> truckIdCaptor = ArgumentCaptor.forClass(Long.class);
+        verify(shipmentServiceMock, times(1)).getAvailableShipmentOrders(truckCaptor.capture());
+        verify(truckServiceMock, times(1)).findTruckWithDetailsById(truckIdCaptor.capture());
+        Assertions.assertEquals(truckCaptor.getValue(), testTruck);
+        Assertions.assertEquals(truckIdCaptor.getValue(), truckId);
     }
 
     @Test
-    void createNewShipment() {
+    @WithMockUser(username = "admin")
+    void showCreateShipmentFormExceptionTest() throws Exception {
+        Long truckId = 1L;
+        when(authenticationFacadeMock.getAuthentication()).thenReturn(authentication);
+        when(authentication.getName()).thenReturn(userWithCompany.getNickName());
+        when(userServiceMock.findUserWithCompanyIdByNickName(authentication.getName()))
+                .thenReturn(userWithCompany);
+        when(truckServiceMock.findTruckWithDetailsById(truckId)).thenReturn(null);
+
+        MvcResult mvcResult = mockMvc.perform(get("/create-shipment/{id}", truckId))
+                .andExpect(status().isNotFound()).andReturn();
+
+        Exception resolvedException = mvcResult.getResolvedException();
+        Assertions.assertEquals(resolvedException.getMessage(), "There is no truck with ID=1");
+        assertTrue(resolvedException instanceof NoSuchTruckException);
     }
 
     @Test

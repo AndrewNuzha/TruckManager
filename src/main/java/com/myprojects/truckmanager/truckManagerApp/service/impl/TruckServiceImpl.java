@@ -4,7 +4,7 @@ import com.myprojects.truckmanager.truckManagerApp.dto.TruckDetailsDTO;
 import com.myprojects.truckmanager.truckManagerApp.model.*;
 import com.myprojects.truckmanager.truckManagerApp.repository.TruckDetailsRepository;
 import com.myprojects.truckmanager.truckManagerApp.repository.TruckRepository;
-import com.myprojects.truckmanager.truckManagerApp.service.LocationService;
+import com.myprojects.truckmanager.truckManagerApp.service.LocationAndTimeService;
 import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +26,13 @@ public class TruckServiceImpl implements TruckService {
     @Autowired
     private TruckDetailsRepository truckDetailsRepository;
     @Autowired
-    private LocationService locationService;
+    private LocationAndTimeService locationAndTimeService;
     private List<NewTruck> newTruckList;
     private final float MILEAGE_BEFORE_SERVICE = 25000f;
 
     @Override
     public Truck createTruck(NewTruck newTruck) {
-        List<Location> allLocations = locationService.getAllLocations();
+        List<Location> allLocations = locationAndTimeService.getAllLocations();
         Location starterLocation = allLocations.stream().filter(loc -> loc.getCity().equals("Saint-Petersburg"))
                 .findAny().orElse(allLocations.get(0));
 

@@ -77,7 +77,7 @@ public class ShipmentController {
      * Initializes the shipment creation process.
      * On this stage we have all the parameters of the shipment, we have to create.
      *
-     * @param newShipmentDTO object with ahipment parameters
+     * @param newShipmentDTO object with shipment parameters
      * @param result         result of checking shipment parameters
      * @return redirection to homepage
      * @throws ShipmentCreationException if there are errors in {@code newShipmentDTO} object.

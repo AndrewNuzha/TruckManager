@@ -2,21 +2,21 @@ package com.myprojects.truckmanager.truckManagerApp.service.impl;
 
 import com.myprojects.truckmanager.truckManagerApp.model.Location;
 import com.myprojects.truckmanager.truckManagerApp.repository.LocationRepository;
-import com.myprojects.truckmanager.truckManagerApp.service.LocationService;
+import com.myprojects.truckmanager.truckManagerApp.service.LocationAndTimeService;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 @Service
-public class LocationServiceImpl implements LocationService {
+public class LocationAndTimeServiceImpl implements LocationAndTimeService {
 
     private final int RADIUS = 6371;
     private final int SPEED = 90;
@@ -70,6 +70,17 @@ public class LocationServiceImpl implements LocationService {
     @Transactional(readOnly = true)
     public List<Location> getAllLocations() {
         return locationRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public void initializeLocationList() {
+        Location locationOne = new Location("Russia", "Saint-Petersburg", 59.939095, 30.315868);
+        Location locationTwo = new Location("Russia", "Moscow", 55.755814, 37.617635);
+        Location locationThree = new Location("Russia", "Kazan", 55.796127, 49.106405);
+        List<Location> locationList = List.of(locationOne, locationTwo, locationThree);
+
+        locationRepository.saveAll(locationList);
     }
 
     private Double toRad(Double value) {
