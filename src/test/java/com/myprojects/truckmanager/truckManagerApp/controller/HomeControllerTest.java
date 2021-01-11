@@ -91,7 +91,7 @@ class HomeControllerTest {
                 .andExpect(status().isOk()).andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals(response, "false");
+        Assertions.assertEquals("false", response);
         verify(userServiceMock, times(1))
                 .findUserWithCompanyIdByNickName(userWithCompany.getNickName());
         verify(truckServiceMock, times(1))
@@ -118,7 +118,7 @@ class HomeControllerTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals(response, "true");
+        Assertions.assertEquals("true", response);
     }
 
     @Test

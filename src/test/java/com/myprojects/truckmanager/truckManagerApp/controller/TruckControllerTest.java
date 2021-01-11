@@ -205,7 +205,7 @@ class TruckControllerTest {
                 .andExpect(status().isNotFound()).andReturn();
 
         Exception resolvedException = mvcResult.getResolvedException();
-        Assertions.assertEquals(resolvedException.getMessage(), "There is no truck with ID=1");
+        Assertions.assertEquals("There is no truck with ID=1", resolvedException.getMessage());
         Assertions.assertTrue(resolvedException instanceof NoSuchTruckException);
 
     }
@@ -229,7 +229,7 @@ class TruckControllerTest {
                 .andExpect(status().isNotFound()).andReturn();
 
         Exception resolvedException = mvcResult.getResolvedException();
-        Assertions.assertEquals(resolvedException.getMessage(), "There is no truck with ID=1");
+        Assertions.assertEquals("There is no truck with ID=1", resolvedException.getMessage());
         Assertions.assertTrue(resolvedException instanceof NoSuchTruckException);
     }
 
@@ -252,7 +252,7 @@ class TruckControllerTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals(response, "true");
+        Assertions.assertEquals("true", response);
     }
 
     @Test
@@ -275,10 +275,10 @@ class TruckControllerTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals(response, "false");
+        Assertions.assertEquals("false", response);
         ArgumentCaptor<Long> truckIdCaptor = ArgumentCaptor.forClass(Long.class);
         verify(truckServiceMock, times(1)).findTruckWithDetailsById(truckIdCaptor.capture());
-        Assertions.assertEquals(truckId, truckIdCaptor.getValue());
+        Assertions.assertEquals(truckIdCaptor.getValue(), truckId);
     }
 
     @Test
@@ -301,11 +301,11 @@ class TruckControllerTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals(response, "true");
+        Assertions.assertEquals("true", response);
         ArgumentCaptor<Truck> truckCaptor = ArgumentCaptor.forClass(Truck.class);
         verify(truckServiceMock, times(1)).sellTruck(truckCaptor.capture());
         Truck truckFromSellMethod = truckCaptor.getValue();
-        Assertions.assertEquals(truckFromSellMethod, truck);
+        Assertions.assertEquals(truck, truckFromSellMethod);
     }
 
     @Test
@@ -324,16 +324,16 @@ class TruckControllerTest {
                 .andReturn();
 
         String response = mvcResult.getResponse().getContentAsString();
-        Assertions.assertEquals(response, "true");
+        Assertions.assertEquals("true", response);
         ArgumentCaptor<Integer> newTruckIdCaptor = ArgumentCaptor.forClass(Integer.class);
         ArgumentCaptor<Company> companyCaptor = ArgumentCaptor.forClass(Company.class);
         verify(companyService, times(1)).addNewTruckToCompany(newTruckIdCaptor.capture(),
                 companyCaptor.capture());
         Integer truckIdFromBuyMethod = newTruckIdCaptor.getValue();
         Company companyFromBuyMethod = companyCaptor.getValue();
-        Assertions.assertEquals(truckIdFromBuyMethod, newTruckId);
-        Assertions.assertEquals(companyFromBuyMethod.getId(), company.getId());
-        Assertions.assertEquals(companyFromBuyMethod.getBalance(), company.getBalance());
+        Assertions.assertEquals(newTruckId, truckIdFromBuyMethod);
+        Assertions.assertEquals(company.getId(), companyFromBuyMethod.getId());
+        Assertions.assertEquals(company.getBalance(), companyFromBuyMethod.getBalance());
     }
 
     @Test
@@ -361,8 +361,8 @@ class TruckControllerTest {
         ArgumentCaptor<Truck> truckCaptor = ArgumentCaptor.forClass(Truck.class);
         verify(truckServiceMock, times(1)).findTruckWithDetailsById(truckIdCaptor.capture());
         verify(truckServiceMock, times(1)).serviceTruck(truckCaptor.capture());
-        Assertions.assertEquals(truckIdCaptor.getValue(), truckId);
+        Assertions.assertEquals(truckId, truckIdCaptor.getValue());
         Truck truckFromServiceMethod = truckCaptor.getValue();
-        Assertions.assertEquals(truckFromServiceMethod, truck);
+        Assertions.assertEquals(truck, truckFromServiceMethod);
     }
 }

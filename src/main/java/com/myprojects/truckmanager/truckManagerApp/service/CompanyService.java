@@ -15,4 +15,6 @@ public interface CompanyService {
 
     void saveCompany(Company company);
 
+    void updateBalance(Company company, Float balance);
+
 }

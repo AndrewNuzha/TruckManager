@@ -111,8 +111,8 @@ class ShipmentControllerTest {
         ArgumentCaptor<Long> truckIdCaptor = ArgumentCaptor.forClass(Long.class);
         verify(shipmentServiceMock, times(1)).getAvailableShipmentOrders(truckCaptor.capture());
         verify(truckServiceMock, times(1)).findTruckWithDetailsById(truckIdCaptor.capture());
-        Assertions.assertEquals(truckCaptor.getValue(), testTruck);
-        Assertions.assertEquals(truckIdCaptor.getValue(), truckId);
+        Assertions.assertEquals(testTruck, truckCaptor.getValue());
+        Assertions.assertEquals(truckId, truckIdCaptor.getValue());
     }
 
     @Test
@@ -129,7 +129,7 @@ class ShipmentControllerTest {
                 .andExpect(status().isNotFound()).andReturn();
 
         Exception resolvedException = mvcResult.getResolvedException();
-        Assertions.assertEquals(resolvedException.getMessage(), "There is no truck with ID=1");
+        Assertions.assertEquals("There is no truck with ID=1", resolvedException.getMessage());
         assertTrue(resolvedException instanceof NoSuchTruckException);
     }
 

@@ -55,15 +55,15 @@ class HomeControllerIntegrationTest {
         User userFromDatabase = userService.findUserWithCompanyByNickName(userRegistrationDTO.getNickName());
 
         Assertions.assertNotNull(userFromDatabase);
-        Assertions.assertEquals(userFromDatabase.getNickName(), userRegistrationDTO.getNickName());
-        Assertions.assertEquals(userFromDatabase.getFirstName(), userRegistrationDTO.getFirstName());
-        Assertions.assertEquals(userFromDatabase.getLastName(), userRegistrationDTO.getLastName());
-        Assertions.assertEquals(userFromDatabase.getEmail(), userRegistrationDTO.getEmail());
-        Assertions.assertEquals(userFromDatabase.getCompany().getName(), userRegistrationDTO.getCompanyName());
+        Assertions.assertEquals(userRegistrationDTO.getNickName(), userFromDatabase.getNickName());
+        Assertions.assertEquals(userRegistrationDTO.getFirstName(), userFromDatabase.getFirstName());
+        Assertions.assertEquals(userRegistrationDTO.getLastName(), userFromDatabase.getLastName());
+        Assertions.assertEquals(userRegistrationDTO.getEmail(), userFromDatabase.getEmail());
+        Assertions.assertEquals(userRegistrationDTO.getCompanyName(), userFromDatabase.getCompany().getName());
         Assertions.assertTrue(passwordEncoder.matches(userRegistrationDTO.getPassword(),
                 userFromDatabase.getPassword()));
-        Assertions.assertEquals(userFromDatabase.getCompany().getBalance(), 20000f);
-        Assertions.assertEquals(userFromDatabase.getCompany().getTrucks().size(), 2);
+        Assertions.assertEquals(20000f, userFromDatabase.getCompany().getBalance());
+        Assertions.assertEquals(2, userFromDatabase.getCompany().getTrucks().size());
     }
 
     @Test
@@ -82,16 +82,16 @@ class HomeControllerIntegrationTest {
         logService.writeShipmentCompletedLog(shipment);
         User userFromDatabase = userService.findUserWithCompanyAndLogsByNickName(userNickName);
 
-        Assertions.assertEquals(userFromDatabase.getNickName(), userRegistrationDTO.getNickName());
-        Assertions.assertEquals(userFromDatabase.getFirstName(), userRegistrationDTO.getFirstName());
-        Assertions.assertEquals(userFromDatabase.getLastName(), userRegistrationDTO.getLastName());
-        Assertions.assertEquals(userFromDatabase.getEmail(), userRegistrationDTO.getEmail());
-        Assertions.assertEquals(userFromDatabase.getCompany().getName(), userRegistrationDTO.getCompanyName());
+        Assertions.assertEquals(userRegistrationDTO.getNickName(), userFromDatabase.getNickName());
+        Assertions.assertEquals(userRegistrationDTO.getFirstName(), userFromDatabase.getFirstName());
+        Assertions.assertEquals(userRegistrationDTO.getLastName(), userFromDatabase.getLastName());
+        Assertions.assertEquals(userRegistrationDTO.getEmail(), userFromDatabase.getEmail());
+        Assertions.assertEquals(userRegistrationDTO.getCompanyName(), userFromDatabase.getCompany().getName());
         Assertions.assertTrue(passwordEncoder.matches(userRegistrationDTO.getPassword(),
                 userFromDatabase.getPassword()));
-        Assertions.assertEquals(userFromDatabase.getCompany().getBalance(), 20000f);
-        Assertions.assertEquals(userFromDatabase.getLogs().size(), 1);
+        Assertions.assertEquals(20000f, userFromDatabase.getCompany().getBalance());
+        Assertions.assertEquals(1, userFromDatabase.getLogs().size());
         Log log = userFromDatabase.getLogs().get(0);
-        Assertions.assertEquals(log.getLogText(), logText);
+        Assertions.assertEquals(logText, log.getLogText());
     }
 }

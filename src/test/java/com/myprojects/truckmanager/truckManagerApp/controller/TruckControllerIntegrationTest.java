@@ -14,8 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  * Provides tests for TruckController.
  * The tests depend on each other, so all tests must be run.
@@ -29,7 +27,7 @@ import java.util.List;
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 class TruckControllerIntegrationTest {
-//
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -39,11 +37,7 @@ class TruckControllerIntegrationTest {
     @Autowired
     private LocationAndTimeService locationAndTimeService;
     @Autowired
-    UserRepository userRepository;
-    @Autowired
-    CompanyService companyService;
-    @Autowired
-    CompanyRepository companyRepository;
+    private CompanyService companyService;
     private final static String userNickName = "Joker";
     private static UserRegistrationDTO userRegistrationDTO;
 
@@ -78,8 +72,8 @@ class TruckControllerIntegrationTest {
         Shipment newShipment = shipmentService.createNewShipment(newShipmentDTO);
         shipmentService.saveShipment(newShipment);
         Truck truckWithDetailsInTrip = truckService.findTruckWithDetailsById(2L);
-        Assertions.assertEquals(truckWithDetailsOne.getStatus(), TruckStatus.AVAILABLE.getStatus);
-        Assertions.assertEquals(truckWithDetailsInTrip.getStatus(), TruckStatus.TRIP.getStatus);
+        Assertions.assertEquals(TruckStatus.AVAILABLE.getStatus, truckWithDetailsOne.getStatus());
+        Assertions.assertEquals(TruckStatus.TRIP.getStatus, truckWithDetailsInTrip.getStatus());
     }
 
     @Test
@@ -97,8 +91,8 @@ class TruckControllerIntegrationTest {
         User userWithCompanyIdByNickName = userService.findUserWithCompanyIdByNickName(userNickName);
         truckService.serviceTruck(truckServiced);
         Float balance = userWithCompanyIdByNickName.getCompany().getBalance();
-        Assertions.assertEquals(truckServiced.getDetails().getMileageBeforeService(), 25000);
-        Assertions.assertEquals(balance, 20944.62f);
+        Assertions.assertEquals(25000, truckServiced.getDetails().getMileageBeforeService());
+        Assertions.assertEquals(20944.62f, balance);
     }
 
     @Test
@@ -124,7 +118,7 @@ class TruckControllerIntegrationTest {
         Truck truck = truckService.findTruckWithDetailsById(1L);
         truckService.sellTruck(truck);
 
-        Assertions.assertEquals(company.getTrucks().size(), 2);
-        Assertions.assertEquals(company.getBalance(), 40945.92f);
+        Assertions.assertEquals(2, company.getTrucks().size());
+        Assertions.assertEquals(40945.92f, company.getBalance());
     }
 }

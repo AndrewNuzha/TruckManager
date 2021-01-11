@@ -6,6 +6,7 @@ import com.myprojects.truckmanager.truckManagerApp.model.Truck;
 import com.myprojects.truckmanager.truckManagerApp.repository.CompanyRepository;
 import com.myprojects.truckmanager.truckManagerApp.service.CompanyService;
 import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,6 @@ public class CompanyServiceImpl implements CompanyService {
      */
     @Override
     public Company createNewCompany(String name) {
-
         NewTruck newTruckModel = truckService.getAllNewTrucks().get(0);
         Company newCompany = new Company(name, 20000F);
         Truck firstStarterTruck = truckService.createTruck(newTruckModel);
@@ -53,11 +53,13 @@ public class CompanyServiceImpl implements CompanyService {
     @Transactional(readOnly = true)
     public boolean isNameAlreadyExist(String name) {
         Company companyFromDb = companyRepository.findByName(name);
-        if (companyFromDb == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return companyFromDb != null;
+    }
+
+    @Override
+    @Transactional
+    public void updateBalance(Company company, Float balance) {
+        companyRepository.updateBalance(Precision.round(company.getBalance() + balance, 2), company.getId());
     }
 
     @Override

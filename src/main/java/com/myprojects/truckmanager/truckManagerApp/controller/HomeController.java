@@ -1,7 +1,6 @@
 package com.myprojects.truckmanager.truckManagerApp.controller;
 
 import com.myprojects.truckmanager.truckManagerApp.model.Company;
-import com.myprojects.truckmanager.truckManagerApp.model.Log;
 import com.myprojects.truckmanager.truckManagerApp.model.NewTruck;
 import com.myprojects.truckmanager.truckManagerApp.model.User;
 import com.myprojects.truckmanager.truckManagerApp.service.LogService;
@@ -9,7 +8,6 @@ import com.myprojects.truckmanager.truckManagerApp.service.TruckService;
 import com.myprojects.truckmanager.truckManagerApp.service.UserService;
 import com.myprojects.truckmanager.truckManagerApp.validation.IAuthenticationFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
