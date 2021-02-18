@@ -30,5 +30,5 @@ On the page **/truckstore** you can select on of the new trucks and buy it.
 Open your terminal and enter:\
 **docker run -e MYSQL_ROOT_PASSWORD=123 -d -p 127.0.0.1:3307:3306 mysql:8**
 #### 2. Initialize database:
-#####Execute the [script][scr]
-[scr]:https://github.com/AndrewNuzha/TruckManager/tree/master/src/main/resources/initializeDB.sql
+Execute script: 
+https://github.com/AndrewNuzha/TruckManager/blob/master/src/main/resources/InitializeDB.sql
