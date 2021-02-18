@@ -78,7 +78,10 @@ public class LocationAndTimeServiceImpl implements LocationAndTimeService {
         Location locationOne = new Location("Russia", "Saint-Petersburg", 59.939095, 30.315868);
         Location locationTwo = new Location("Russia", "Moscow", 55.755814, 37.617635);
         Location locationThree = new Location("Russia", "Kazan", 55.796127, 49.106405);
-        List<Location> locationList = List.of(locationOne, locationTwo, locationThree);
+        List<Location> locationList = new ArrayList<>();
+        locationList.add(locationOne);
+        locationList.add(locationTwo);
+        locationList.add(locationThree);
 
         locationRepository.saveAll(locationList);
     }
